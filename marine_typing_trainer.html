@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Морской тренажёр: Ввод слов</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #090e17;
+    color: #f1f5f9;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+  .card {
+    background: #141e33;
+    border: 1px solid #1e2e4f;
+    border-radius: 16px;
+    max-width: 520px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  }
+  .top-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .counter { color: #94a3b8; }
+  .score { color: #38bdf8; }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .badge-ru-en { background: #0284c7; color: #ffffff; }
+  .badge-en-ru { background: #0d9488; color: #ffffff; }
+
+  .prompt-label {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .target-word {
+    font-size: 24px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 20px;
+    color: #ffffff;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+  }
+  .input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  input[type="text"] {
+    background: #0d1524;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 16px;
+    color: #ffffff;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  input[type="text"]:focus {
+    border-color: #38bdf8;
+  }
+  .submit-btn {
+    background: #0284c7;
+    border: none;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .submit-btn:hover { background: #0369a1; }
+
+  .feedback-box {
+    margin-top: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    min-height: 22px;
+    line-height: 1.4;
+  }
+  .fb-good { color: #4ade80; }
+  .fb-bad { color: #f87171; }
+
+  .next-action-btn {
+    margin-top: 16px;
+    width: 100%;
+    background: #38bdf8;
+    color: #041226;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+  }
+  .next-action-btn:hover { background: #7dd3fc; }
+</style>
+</head>
+<body>
+
+<div class="card" id="trainer-card">
+  <div class="top-stats">
+    <span class="counter" id="q-counter">Слово 1 / 30</span>
+    <span class="score" id="score-box">Баллы: 0</span>
+  </div>
+
+  <span class="badge" id="mode-badge">РУССКИЙ ➔ АНГЛИЙСКИЙ</span>
+  <div class="prompt-label" id="prompt-label">Введи перевод:</div>
+  <div class="target-word" id="target-word">Загрузка...</div>
+
+  <div class="input-wrap">
+    <input type="text" id="user-input" placeholder="Напиши слово и нажми Enter..." autocomplete="off" autofocus />
+    <button class="submit-btn" id="check-btn" onclick="checkAnswer()">Проверить ➔</button>
+  </div>
+
+  <div class="feedback-box" id="feedback"></div>
+  <button class="next-action-btn" id="next-btn" onclick="nextCard()">Дальше ➔</button>
+</div>
+
+<script>
+const items = [
+  { ru: ["люк"], en: ["hatch"] },
+  { ru: ["грузовая стрела", "стрела"], en: ["derrick"] },
+  { ru: ["лебедка", "лебёдка"], en: ["winch"] },
+  { ru: ["форштевень"], en: ["stem"] },
+  { ru: ["бортовая цистерна", "бортовой танк"], en: ["wing tank"] },
+  { ru: ["второе дно", "двойное дно"], en: ["tanktop"] },
+  { ru: ["междудонная цистерна", "междудонный танк"], en: ["double bottom tank"] },
+  { ru: ["набор корпуса", "набор корпуса судна", "набор"], en: ["framing"] },
+  { ru: ["обшивка", "настил", "обшивка настил"], en: ["plating"] },
+  { ru: ["стойка", "мачта", "стойка мачта"], en: ["post"] },
+  { ru: ["кормовой", "самый задний"], en: ["rearmost"] },
+  { ru: ["левый борт"], en: ["port"] },
+  { ru: ["правый борт"], en: ["starboard"] },
+  { ru: ["переборка"], en: ["bulkhead"] },
+  { ru: ["отсек", "помещение"], en: ["compartment"] },
+  { ru: ["продольный", "с носа до кормы"], en: ["fore and aft"] },
+  { ru: ["прогулочная палуба"], en: ["promenade deck"] },
+  { ru: ["крен"], en: ["list", "heel"] },
+  { ru: ["дифферент"], en: ["trim"] },
+  { ru: ["решетка", "гребень", "решётка"], en: ["grid"] },
+  { ru: ["ют"], en: ["poop"] },
+  { ru: ["форпик"], en: ["forepeak"] },
+  { ru: ["ахтерпик"], en: ["afterpeak"] },
+  { ru: ["марки углубления"], en: ["draught marks"] },
+  { ru: ["давление среды", "давление текучей среды"], en: ["fluid pressure"] },
+  { ru: ["неправильная нагрузка"], en: ["faulty loading"] },
+  { ru: ["вдоль и поперек", "вдоль и поперёк"], en: ["across the ship and along"] },
+  { ru: ["водонепроницаемый"], en: ["watertight"] },
+  { ru: ["мостик", "надстройка", "средняя надстройка"], en: ["bridge"] },
+  { ru: ["наклонять", "иметь тенденцию"], en: ["incline", "to incline"] }
+];
+
+function shuffle(arr) {
+  return arr.slice().sort(() => Math.random() - 0.5);
+}
+
+function cleanStr(s) {
+  return s.toLowerCase().trim().replace(/ё/g, "е").replace(/[^a-zа-я0-9\s]/gi, "");
+}
+
+let cards = [];
+let currentIndex = 0;
+let score = 0;
+
+function initCards() {
+  const shuffledVocab = shuffle(items);
+  cards = shuffledVocab.map(item => {
+    const isRuToEn = Math.random() < 0.5;
+    return {
+      isRuToEn,
+      promptWord: isRuToEn ? item.ru[0] : item.en[0],
+      validAnswers: isRuToEn ? item.en : item.ru,
+      displayAnswer: isRuToEn ? item.en[0] : item.ru[0]
+    };
+  });
+}
+
+function renderCard() {
+  const c = cards[currentIndex];
+  document.getElementById("q-counter").textContent = `Слово ${currentIndex + 1} / ${cards.length}`;
+  document.getElementById("score-box").textContent = `Баллы: ${score}`;
+
+  const badge = document.getElementById("mode-badge");
+  if (c.isRuToEn) {
+    badge.className = "badge badge-ru-en";
+    badge.textContent = "🇷🇺 ➔ 🇬🇧 ПИШИ НА АНГЛИЙСКОМ";
+  } else {
+    badge.className = "badge badge-en-ru";
+    badge.textContent = "🇬🇧 ➔ 🇷🇺 ПИШИ НА РУССКОМ";
+  }
+
+  document.getElementById("prompt-label").textContent = c.isRuToEn ? "Введи морской термин по-английски:" : "Введи перевод по-русски:";
+  document.getElementById("target-word").textContent = c.promptWord;
+
+  const inp = document.getElementById("user-input");
+  inp.value = "";
+  inp.disabled = false;
+  inp.style.borderColor = "#334155";
+  inp.focus();
+
+  document.getElementById("check-btn").disabled = false;
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").className = "feedback-box";
+  document.getElementById("next-btn").style.display = "none";
+}
+
+function checkAnswer() {
+  const inp = document.getElementById("user-input");
+  if (!inp || inp.disabled) return;
+
+  const userVal = cleanStr(inp.value);
+  if (!userVal) return;
+
+  inp.disabled = true;
+  document.getElementById("check-btn").disabled = true;
+
+  const c = cards[currentIndex];
+  const isMatch = c.validAnswers.some(ans => cleanStr(ans) === userVal);
+  const fb = document.getElementById("feedback");
+
+  if (isMatch) {
+    score += 10;
+    inp.style.borderColor = "#4ade80";
+    fb.className = "feedback-box fb-good";
+    fb.textContent = "Верно!";
+  } else {
+    inp.style.borderColor = "#f87171";
+    fb.className = "feedback-box fb-bad";
+    fb.textContent = `Неверно. Правильно: «${c.displayAnswer}»`;
+  }
+
+  document.getElementById("score-box").textContent = `Баллы: ${score}`;
+  document.getElementById("next-btn").style.display = "block";
+  document.getElementById("next-btn").focus();
+}
+
+function nextCard() {
+  currentIndex++;
+  if (currentIndex < cards.length) {
+    renderCard();
+  } else {
+    document.getElementById("trainer-card").innerHTML = `
+      <h2 style="color: #38bdf8; font-size: 24px; margin-bottom: 12px;">Тренировка окончена!</h2>
+      <p style="font-size: 18px; margin-bottom: 16px;">Набрано: <b>${score}</b> из <b>${cards.length * 10}</b> баллов</p>
+      <button class="next-action-btn" style="display:block;" onclick="location.reload()">Пройти ещё раз (вопросы перемешаются)</button>
+    `;
+  }
+}
+
+document.getElementById("user-input").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    checkAnswer();
+  }
+});
+
+initCards();
+renderCard();
+</script>
+
+</body>
+</html>

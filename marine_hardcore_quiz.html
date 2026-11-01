@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Морской тренажёр: Pro</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #090e17;
+    color: #f1f5f9;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+  }
+  .card {
+    background: #141e33;
+    border: 1px solid #1e2e4f;
+    border-radius: 16px;
+    max-width: 540px;
+    width: 100%;
+    padding: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+  }
+  .top-stats {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .lives { color: #f87171; letter-spacing: 2px; }
+  .score { color: #38bdf8; }
+  .stage-tag {
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+  .badge-type { background: #0284c7; color: white; }
+  .badge-anagram { background: #8b5cf6; color: white; }
+  .badge-tf { background: #f59e0b; color: black; }
+  .badge-choice { background: #10b981; color: white; }
+  .badge-hard { background: #e11d48; color: white; }
+
+  .task-prompt {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .task-question {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    color: #ffffff;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+  }
+  .context-subtext {
+    font-size: 14px;
+    color: #94a3b8;
+    margin-top: -12px;
+    margin-bottom: 18px;
+    line-height: 1.4;
+  }
+
+  /* Режим ввода */
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  input[type="text"] {
+    background: #0d1524;
+    border: 2px solid #334155;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 16px;
+    color: #ffffff;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus {
+    border-color: #38bdf8;
+  }
+  .submit-btn {
+    background: #0284c7;
+    border: none;
+    color: white;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .submit-btn:hover { background: #0369a1; }
+
+  /* Режим кнопок */
+  .options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  button.opt-btn {
+    background: #1b263b;
+    border: 2px solid #2d3b55;
+    color: #f8fafc;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 15px;
+    text-align: left;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.35;
+    transition: all 0.15s;
+  }
+  button.opt-btn:hover:not(:disabled) {
+    background: #243350;
+    border-color: #38bdf8;
+  }
+  .tf-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* Подсветка */
+  .correct { background: #15803d !important; border-color: #4ade80 !important; color: white !important; }
+  .wrong { background: #b91c1c !important; border-color: #f87171 !important; color: white !important; }
+
+  .feedback-box {
+    margin-top: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 22px;
+    line-height: 1.4;
+  }
+  .fb-good { color: #4ade80; }
+  .fb-bad { color: #f87171; }
+
+  .next-action-btn {
+    margin-top: 16px;
+    width: 100%;
+    background: #38bdf8;
+    color: #041226;
+    border: none;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    display: none;
+  }
+  .next-action-btn:hover { background: #7dd3fc; }
+</style>
+</head>
+<body>
+
+<div class="card" id="game-card">
+  <div class="top-stats">
+    <div>
+      <span class="stage-tag" id="stage-indicator">ЭТАП 1</span> • 
+      <span id="q-counter">Задание 1 / 20</span>
+    </div>
+    <span class="lives" id="lives-box">❤️❤️❤️</span>
+    <span class="score" id="score-box">Очки: 0</span>
+  </div>
+
+  <span class="badge" id="mode-badge">РЕЖИМ</span>
+  <div class="task-prompt" id="task-prompt">ЗАДАНИЕ</div>
+  <div class="task-question" id="task-question">Загрузка...</div>
+  <div class="context-subtext" id="context-subtext"></div>
+
+  <div id="interactive-area"></div>
+  <div class="feedback-box" id="feedback"></div>
+  <button class="next-action-btn" id="next-btn" onclick="nextStep()">Дальше ➔</button>
+</div>
+
+<script>
+const dict = [
+  { ru: "люк", en: "hatch" },
+  { ru: "грузовая стрела", en: "derrick" },
+  { ru: "лебедка", en: "winch" },
+  { ru: "форштевень", en: "stem" },
+  { ru: "бортовая цистерна", en: "wing tank" },
+  { ru: "второе дно", en: "tanktop" },
+  { ru: "набор корпуса судна", en: "framing" },
+  { ru: "обшивка, настил", en: "plating" },
+  { ru: "стойка, мачта", en: "post" },
+  { ru: "левый борт", en: "port" },
+  { ru: "правый борт", en: "starboard" },
+  { ru: "переборка", en: "bulkhead" },
+  { ru: "продольный, с носа до кормы", en: "fore and aft" },
+  { ru: "прогулочная палуба", en: "promenade deck" },
+  { ru: "дифферент", en: "trim" },
+  { ru: "крен", en: "list" },
+  { ru: "ют", en: "poop" },
+  { ru: "форпик", en: "forepeak" },
+  { ru: "ахтерпик", en: "afterpeak" },
+  { ru: "отсек", en: "compartment" },
+  { ru: "марки углубления", en: "draught marks" },
+  { ru: "водонепроницаемый", en: "watertight" },
+  { ru: "мостик, надстройка", en: "bridge" },
+  { ru: "вдоль и поперек", en: "across the ship and along" },
+  { ru: "давление среды", en: "fluid pressure" }
+];
+
+// 8 контекстных сложных предложений для Этапа 2
+const hardSentences = [
+  {
+    sentence: "Due to faulty loading of heavy containers on the starboard side, the vessel developed a permanent list.",
+    subtext: "Определи смысл выделенного процесса / последствия:",
+    question: "Что произошло с судном из-за неправильной погрузки?",
+    ans: "Судно получило постоянный крен на правый борт",
+    options: [
+      "Судно получило постоянный крен на правый борт",
+      "Судно получило дифферент на нос",
+      "Была повреждена обшивка левого борта",
+      "Затопило ахтерпик и машинное отделение"
+    ]
+  },
+  {
+    sentence: "The crew closed and secured the cargo hatch to ensure the hold remains completely watertight during rough sea.",
+    subtext: "Каково назначение выполненного действия?",
+    question: "Зачем команда задраила грузовой люк (cargo hatch)?",
+    ans: "Чтобы обеспечить полную водонепроницаемость трюма в шторм",
+    options: [
+      "Чтобы обеспечить полную водонепроницаемость трюма в шторм",
+      "Чтобы запустить грузовую стрелу и лебёдки",
+      "Чтобы выровнять давление текучей среды во втором дне",
+      "Для вентиляции жилых помещений и надстройки"
+    ]
+  },
+  {
+    sentence: "Water began filling the forepeak compartment immediately after the stem struck an underwater obstacle.",
+    subtext: "Разбери повреждение по деталям конструкции:",
+    question: "Какая часть корпуса пострадала и какой отсек затопило?",
+    ans: "Форштевень (нос) получил удар, затопило носовой отсек (форпик)",
+    options: [
+      "Форштевень (нос) получил удар, затопило носовой отсек (форпик)",
+      "Корма получила удар, затопило ахтерпик",
+      "Пробило настил второго дна под машинным отделением",
+      "Треснула поперечная переборка возле правого борта"
+    ]
+  },
+  {
+    sentence: "To reduce trim by the stern, the duty officer ordered ballast to be pumped into the forepeak tank.",
+    subtext: "Определи навигационную ситуацию:",
+    question: "Какую проблему устраняет вахтенный помощник?",
+    ans: "Дифферент на корму (путем закачки балласта в носовой танк)",
+    options: [
+      "Дифферент на корму (путем закачки балласта в носовой танк)",
+      "Опасный крен на левый борт",
+      "Повышенное давление в бортовых цистернах",
+      "Увеличение общей осадки судна выше грузовой марки"
+    ]
+  },
+  {
+    sentence: "The derrick and winch systems are mounted on the deck for self-sustained loading and discharging operations.",
+    subtext: "Определи назначение оборудования:",
+    question: "О каком оборудовании и операциях идёт речь в предложении?",
+    ans: "Грузовые стрелы и лебёдки для самостоятельной погрузки и выгрузки",
+    options: [
+      "Грузовые стрелы и лебёдки для самостоятельной погрузки и выгрузки",
+      "Швартовные механизмы на баке и юте для стоянки у причала",
+      "Спасательные шлюпки и кран-балки на шлюпочной палубе",
+      "Система насосов для откачки воды из междудонных цистерн"
+    ]
+  },
+  {
+    sentence: "The transverse bulkheads divide the vessel's hull into several separate watertight compartments.",
+    subtext: "Конструктивная особенность судна:",
+    question: "Какую функцию выполняют поперечные переборки (transverse bulkheads)?",
+    ans: "Делят корпус на несколько отдельных водонепроницаемых отсеков",
+    options: [
+      "Делят корпус на несколько отдельных водонепроницаемых отсеков",
+      "Усиливают продольный набор корпуса от носа до кормы",
+      "Служат настилом для второго дна и цистерн",
+      "Защищают прогулочную палубу от набегающих волн"
+    ]
+  },
+  {
+    sentence: "During inspection, the surveyor examined the draught marks at both the stem and the stern.",
+    subtext: "Контроль параметров судна:",
+    question: "Что именно проверял инспектор на носу и на корме?",
+    ans: "Марки углубления (осадки) судна",
+    options: [
+      "Марки углубления (осадки) судна",
+      "Состояние обшивки и набора корпуса",
+      "Прочность шлюпочных лебёдок",
+      "Герметичность крышек трюмов"
+    ]
+  },
+  {
+    sentence: "Fuel oil is stored in the double bottom tanks, directly underneath the cargo tanktop plating.",
+    subtext: "Расположение судовых конструкций:",
+    question: "Где именно хранится топливо согласно предложению?",
+    ans: "В междудонных цистернах, прямо под настилом второго дна",
+    options: [
+      "В междудонных цистернах, прямо под настилом второго дна",
+      "В бортовых танках выше ватерлинии",
+      "В форпике за носовой переборкой",
+      "В расходных цистернах машинного отделения"
+    ]
+  }
+];
+
+function shuffle(arr) {
+  return arr.slice().sort(() => Math.random() - 0.5);
+}
+
+let stage = 1; // 1 = базовые термины, 2 = сложные предложения
+let stage1Tasks = [];
+let stage2Tasks = [];
+let currentIdx = 0;
+let lives = 3;
+let score = 0;
+
+function initStage1() {
+  const types = ["type_input", "anagram", "true_false", "choice"];
+  const shuffledDict = shuffle(dict).slice(0, 20);
+
+  stage1Tasks = shuffledDict.map((item, idx) => {
+    const tType = types[idx % types.length];
+
+    if (tType === "type_input") {
+      return {
+        type: "input",
+        badge: "badge-type",
+        badgeText: "✍️ Ввод термина",
+        prompt: "Введи точный морской термин на английском:",
+        question: item.ru,
+        answer: item.en.toLowerCase().trim()
+      };
+    } else if (tType === "anagram") {
+      const baseWord = item.en.includes(" ") ? "derrick" : item.en;
+      const baseRu = item.en.includes(" ") ? "грузовая стрела" : item.ru;
+      const letters = shuffle(baseWord.split("")).join(" ");
+      return {
+        type: "anagram",
+        badge: "badge-anagram",
+        badgeText: "🧩 Сборка слова",
+        prompt: `Собери термин для: «${baseRu}»`,
+        question: letters.toUpperCase(),
+        answer: baseWord.toLowerCase().trim()
+      };
+    } else if (tType === "true_false") {
+      const isTruth = Math.random() > 0.5;
+      let presentedRu = item.ru;
+      if (!isTruth) {
+        const other = dict.find(d => d.en !== item.en);
+        presentedRu = other.ru;
+      }
+      return {
+        type: "true_false",
+        badge: "badge-tf",
+        badgeText: "⚖️ Проверка термина",
+        prompt: "Верно ли сопоставление?",
+        question: `«${item.en}» — это «${presentedRu}»?`,
+        answer: isTruth ? "ПРАВДА" : "ЛОЖЬ",
+        realRu: item.ru
+      };
+    } else {
+      const isEnToRu = Math.random() < 0.5;
+      const qText = isEnToRu ? item.en : item.ru;
+      const ans = isEnToRu ? item.ru : item.en;
+      const pool = dict.filter(d => (isEnToRu ? d.ru : d.en) !== ans).map(d => isEnToRu ? d.ru : d.en);
+      const wrong = shuffle(pool).slice(0, 3);
+      const opts = shuffle([ans, ...wrong]);
+
+      return {
+        type: "choice",
+        badge: "badge-choice",
+        badgeText: isEnToRu ? "🇬🇧 ➔ 🇷🇺 Выбор перевода" : "🇷🇺 ➔ 🇬🇧 Выбор перевода",
+        prompt: "Выбери корректный вариант:",
+        question: qText,
+        options: opts,
+        answer: ans
+      };
+    }
+  });
+}
+
+function initStage2() {
+  stage2Tasks = shuffle(hardSentences).map(item => {
+    return {
+      type: "sentence",
+      badge: "badge-hard",
+      badgeText: "🔥 Hard: Анализ предложения",
+      prompt: item.subtext,
+      question: item.sentence,
+      actualQ: item.question,
+      answer: item.ans,
+      options: shuffle(item.options)
+    };
+  });
+}
+
+function renderCard() {
+  const isS1 = (stage === 1);
+  const tasks = isS1 ? stage1Tasks : stage2Tasks;
+  const t = tasks[currentIdx];
+
+  document.getElementById("stage-indicator").textContent = isS1 ? "ЭТАП 1: ТЕРМИНЫ" : "ЭТАП 2: КОНТЕКСТ И ПРЕДЛОЖЕНИЯ";
+  document.getElementById("q-counter").textContent = `Задание ${currentIdx + 1} / ${tasks.length}`;
+  document.getElementById("score-box").textContent = `Очки: ${score}`;
+  document.getElementById("lives-box").textContent = "❤️".repeat(lives) + "🖤".repeat(3 - lives);
+
+  const badge = document.getElementById("mode-badge");
+  badge.className = `badge ${t.badge}`;
+  badge.textContent = t.badgeText;
+
+  document.getElementById("task-prompt").textContent = t.prompt;
+  document.getElementById("task-question").textContent = t.question;
+  
+  const sub = document.getElementById("context-subtext");
+  if (t.type === "sentence") {
+    sub.textContent = t.actualQ;
+    sub.style.display = "block";
+    sub.style.color = "#38bdf8";
+    sub.style.fontWeight = "700";
+  } else {
+    sub.style.display = "none";
+  }
+
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").className = "feedback-box";
+  document.getElementById("next-btn").style.display = "none";
+
+  const area = document.getElementById("interactive-area");
+  area.innerHTML = "";
+
+  if (t.type === "input" || t.type === "anagram") {
+    area.innerHTML = `
+      <div class="input-group">
+        <input type="text" id="user-input" placeholder="Введи термин..." autocomplete="off" autofocus />
+        <button class="submit-btn" onclick="checkInput()">Подтвердить</button>
+      </div>
+    `;
+    const inputField = document.getElementById("user-input");
+    inputField.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkInput();
+    });
+  } else if (t.type === "true_false") {
+    area.innerHTML = `
+      <div class="tf-grid">
+        <button class="opt-btn" onclick="checkTF('ПРАВДА', this)">✅ ПРАВДА</button>
+        <button class="opt-btn" onclick="checkTF('ЛОЖЬ', this)">❌ ЛОЖЬ</button>
+      </div>
+    `;
+  } else if (t.type === "choice" || t.type === "sentence") {
+    const wrap = document.createElement("div");
+    wrap.className = "options-grid";
+    t.options.forEach(opt => {
+      const b = document.createElement("button");
+      b.className = "opt-btn";
+      b.textContent = opt;
+      b.onclick = () => checkChoice(opt, b);
+      wrap.appendChild(b);
+    });
+    area.appendChild(wrap);
+  }
+}
+
+function handleSuccess() {
+  score += (stage === 1 ? 10 : 25);
+  const fb = document.getElementById("feedback");
+  fb.className = "feedback-box fb-good";
+  fb.textContent = "Верно!";
+  document.getElementById("score-box").textContent = `Очки: ${score}`;
+  document.getElementById("next-btn").style.display = "block";
+}
+
+function handleFailure(correct) {
+  lives--;
+  document.getElementById("lives-box").textContent = "❤️".repeat(Math.max(0, lives)) + "🖤".repeat(3 - Math.max(0, lives));
+  const fb = document.getElementById("feedback");
+  fb.className = "feedback-box fb-bad";
+  fb.textContent = `Неверно. Правильный ответ: «${correct}»`;
+  document.getElementById("next-btn").style.display = "block";
+
+  if (lives <= 0) {
+    setTimeout(gameOver, 500);
+  }
+}
+
+function checkInput() {
+  const inp = document.getElementById("user-input");
+  if (!inp || inp.disabled) return;
+  inp.disabled = true;
+  document.querySelector(".submit-btn").disabled = true;
+
+  const val = inp.value.trim().toLowerCase();
+  const t = stage1Tasks[currentIdx];
+
+  if (val === t.answer) {
+    inp.style.borderColor = "#4ade80";
+    handleSuccess();
+  } else {
+    inp.style.borderColor = "#f87171";
+    handleFailure(t.answer);
+  }
+}
+
+function checkTF(val, btn) {
+  const buttons = document.querySelectorAll(".tf-grid button");
+  buttons.forEach(b => b.disabled = true);
+  const t = stage1Tasks[currentIdx];
+
+  if (val === t.answer) {
+    btn.classList.add("correct");
+    handleSuccess();
+  } else {
+    btn.classList.add("wrong");
+    handleFailure(`${t.answer} (На самом деле: «${t.realRu}»)`);
+  }
+}
+
+function checkChoice(val, btn) {
+  const tasks = (stage === 1) ? stage1Tasks : stage2Tasks;
+  const t = tasks[currentIdx];
+  const buttons = document.querySelectorAll(".options-grid button");
+  buttons.forEach(b => b.disabled = true);
+
+  if (val === t.answer) {
+    btn.classList.add("correct");
+    handleSuccess();
+  } else {
+    btn.classList.add("wrong");
+    buttons.forEach(b => {
+      if (b.textContent === t.answer) b.classList.add("correct");
+    });
+    handleFailure(t.answer);
+  }
+}
+
+function nextStep() {
+  const currentTasks = (stage === 1) ? stage1Tasks : stage2Tasks;
+  currentIdx++;
+
+  if (currentIdx < currentTasks.length && lives > 0) {
+    renderCard();
+  } else if (stage === 1 && lives > 0) {
+    // Переход на Этап 2
+    stage = 2;
+    currentIdx = 0;
+    renderTransitionScreen();
+  } else if (lives > 0) {
+    victory();
+  }
+}
+
+function renderTransitionScreen() {
+  document.getElementById("game-card").innerHTML = `
+    <span class="badge badge-hard">НОВЫЙ УРОВЕНЬ</span>
+    <h2 style="font-size: 24px; color: #f87171; margin: 12px 0 10px 0;">Хардкорный уровень разблокирован 🔥</h2>
+    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.5; margin-bottom: 16px;">
+      Базовые термины пройдены. Впереди <b>8 реальных технических предложений</b> на английском: аварии, дифферент, повреждения обшивки, работа балласта и водонепроницаемость.
+    </p>
+    <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">Жизни сохраняются: <b>${lives} из 3</b>. Цена ошибки здесь выше.</p>
+    <button class="next-action-btn" style="display:block;" onclick="startStage2()">Перейти к предложениям ➔</button>
+  `;
+}
+
+function startStage2() {
+  // Восстанавливаем разметку карточки
+  document.getElementById("game-card").innerHTML = `
+    <div class="top-stats">
+      <div>
+        <span class="stage-tag" id="stage-indicator">ЭТАП 2: ПРЕДЛОЖЕНИЯ</span> • 
+        <span id="q-counter">Задание 1 / 8</span>
+      </div>
+      <span class="lives" id="lives-box">❤️❤️❤️</span>
+      <span class="score" id="score-box">Очки: ${score}</span>
+    </div>
+
+    <span class="badge" id="mode-badge">РЕЖИМ</span>
+    <div class="task-prompt" id="task-prompt">ЗАДАНИЕ</div>
+    <div class="task-question" id="task-question">Загрузка...</div>
+    <div class="context-subtext" id="context-subtext"></div>
+
+    <div id="interactive-area"></div>
+    <div class="feedback-box" id="feedback"></div>
+    <button class="next-action-btn" id="next-btn" onclick="nextStep()">Дальше ➔</button>
+  `;
+  renderCard();
+}
+
+function gameOver() {
+  let rank = "Матрос 2-й статьи";
+  if (score >= 120) rank = "Вахтенный помощник";
+  if (score >= 200) rank = "Старший помощник";
+
+  document.getElementById("game-card").innerHTML = `
+    <h2 style="color: #f87171; font-size: 26px; margin-bottom: 10px;">Тест не пройден</h2>
+    <p style="color: #94a3b8; font-size: 15px; margin-bottom: 14px;">Закончились все 3 жизни.</p>
+    <div style="background: #0d1524; padding: 16px; border-radius: 10px; margin-bottom: 20px;">
+      <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">ФИНАЛЬНЫЙ СЧЁТ</div>
+      <div style="font-size: 24px; font-weight: 800; color: #38bdf8;">${score} очков</div>
+      <div style="font-size: 14px; color: #cbd5e1; margin-top: 6px;">Присвоенный уровень: <b>${rank}</b></div>
+    </div>
+    <button class="next-action-btn" style="display:block;" onclick="location.reload()">Пройти заново</button>
+  `;
+}
+
+function victory() {
+  let rank = "Капитан дальнего плавания";
+  if (score < 260) rank = "Старший механик";
+
+  document.getElementById("game-card").innerHTML = `
+    <h2 style="color: #4ade80; font-size: 26px; margin-bottom: 10px;">Полный курс завершён! 🏆</h2>
+    <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 16px;">Пройдены как отдельные термины, так и разбор сложных предложений.</p>
+    <div style="background: #0d1524; padding: 16px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #1e293b;">
+      <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">РЕЗУЛЬТАТ</div>
+      <div style="font-size: 26px; font-weight: 800; color: #38bdf8; margin-bottom: 4px;">${score} очков</div>
+      <div style="font-size: 15px; color: #f8fafc;">Уровень: <b style="color: #4ade80;">${rank}</b></div>
+      <div style="font-size: 13px; color: #94a3b8; margin-top: 6px;">Остаток жизней: ${lives} из 3</div>
+    </div>
+    <button class="next-action-btn" style="display:block;" onclick="location.reload()">Сыграть ещё раз</button>
+  `;
+}
+
+initStage1();
+initStage2();
+renderCard();
+</script>
+
+</body>
+</html>
