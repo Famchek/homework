@@ -2,17 +2,17 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Учебный портал | Задания и решения</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ЭМ-242 | Учебный портал ДЗ</title>
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background: #090e17;
     color: #f1f5f9;
     line-height: 1.5;
-    padding: 16px;
-    padding-bottom: 60px;
+    padding: 12px;
+    padding-bottom: 80px;
   }
   .container {
     max-width: 760px;
@@ -22,15 +22,15 @@
     background: #141e33;
     border: 1px solid #1e2e4f;
     border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    padding: 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.45);
   }
   .header-top {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 12px;
+    align-items: flex-start;
+    gap: 10px;
     flex-wrap: wrap;
     margin-bottom: 14px;
   }
@@ -41,13 +41,18 @@
     letter-spacing: 0.01em;
   }
   .subtitle {
-    font-size: 13px;
+    font-size: 12px;
     color: #94a3b8;
+    margin-top: 2px;
   }
-  .admin-toggle-btn {
+  .header-btns {
+    display: flex;
+    gap: 8px;
+  }
+  .top-btn {
     background: #1e293b;
     border: 1px solid #334155;
-    color: #94a3b8;
+    color: #cbd5e1;
     padding: 8px 12px;
     border-radius: 8px;
     font-size: 12px;
@@ -55,10 +60,31 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .admin-toggle-btn:hover {
+  .top-btn:hover, .top-btn.active {
     color: #ffffff;
     border-color: #38bdf8;
+    background: #0284c7;
   }
+
+  /* Блок расписания ЭМ-242 (фото-обрезка) */
+  #schedule-box {
+    display: none;
+    background: #0d1524;
+    border: 1px solid #2d3b55;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 14px;
+    text-align: center;
+  }
+  #schedule-box.open { display: block; }
+  .sched-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    margin-top: 8px;
+  }
+
   /* Блок ввода пароля */
   #auth-box {
     display: none;
@@ -70,9 +96,7 @@
     gap: 8px;
     align-items: center;
   }
-  #auth-box.open {
-    display: flex;
-  }
+  #auth-box.open { display: flex; }
   .auth-input {
     flex: 1;
     background: #141e33;
@@ -97,7 +121,7 @@
   .auth-err {
     font-size: 12px;
     color: #f87171;
-    margin-top: 6px;
+    margin-bottom: 10px;
     display: none;
   }
 
@@ -116,15 +140,15 @@
     font-size: 14px;
     outline: none;
   }
-  .search-input:focus {
-    border-color: #38bdf8;
-  }
+  .search-input:focus { border-color: #38bdf8; }
   .filter-bar {
     display: flex;
-    gap: 8px;
+    gap: 7px;
     overflow-x: auto;
     padding-bottom: 4px;
+    scrollbar-width: none;
   }
+  .filter-bar::-webkit-scrollbar { display: none; }
   .filter-btn {
     background: #0d1524;
     border: 1px solid #2d3b55;
@@ -152,8 +176,8 @@
     background: #141e33;
     border: 1px solid #1e2e4f;
     border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    padding: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
     transition: border-color 0.2s;
   }
   .task-card.done-card {
@@ -178,13 +202,6 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
   }
-  .deadline-wrap {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 700;
-  }
   .deadline-badge {
     padding: 4px 8px;
     border-radius: 6px;
@@ -196,7 +213,7 @@
   .dl-overdue { background: #450a0a; color: #f87171; border: 1px solid #b91c1c; }
 
   .task-title {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     color: #ffffff;
     margin-bottom: 8px;
@@ -205,10 +222,9 @@
     font-size: 14px;
     color: #cbd5e1;
     white-space: pre-wrap;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
 
-  /* Секции файлов и решений */
   .section-box {
     background: #0d1524;
     border: 1px solid #1e293b;
@@ -267,7 +283,6 @@
     font-weight: 700;
     cursor: pointer;
     padding: 4px 0;
-    margin-bottom: 6px;
   }
   .solution-content {
     font-size: 13px;
@@ -275,17 +290,17 @@
     white-space: pre-wrap;
     border-top: 1px solid #1e293b;
     padding-top: 10px;
-    margin-top: 6px;
+    margin-top: 8px;
     display: none;
   }
-  .solution-content.open {
-    display: block;
-  }
+  .solution-content.open { display: block; }
 
   .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
     margin-top: 14px;
     padding-top: 12px;
     border-top: 1px solid #1e293b;
@@ -306,25 +321,39 @@
     cursor: pointer;
   }
 
-  /* Панель владельца (Генератор) */
+  /* Панель владельца */
   #admin-panel {
     display: none;
     background: #141e33;
     border: 2px solid #0284c7;
     border-radius: 14px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 18px;
+    margin-bottom: 18px;
   }
   .admin-title {
     font-size: 16px;
     font-weight: 800;
     color: #38bdf8;
-    margin-bottom: 6px;
+    margin-bottom: 10px;
   }
-  .admin-note {
+  .token-box {
+    background: #0d1524;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 14px;
+  }
+  .token-title {
     font-size: 12px;
+    font-weight: 700;
+    color: #38bdf8;
+    margin-bottom: 4px;
+  }
+  .token-hint {
+    font-size: 11px;
     color: #94a3b8;
-    margin-bottom: 16px;
+    margin-bottom: 8px;
+    line-height: 1.4;
   }
   .form-grid {
     display: flex;
@@ -336,7 +365,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
-  @media (max-width: 520px) {
+  @media (max-width: 540px) {
     .form-row { grid-template-columns: 1fr; }
   }
   label.f-label {
@@ -355,6 +384,10 @@
     color: #ffffff;
     font-size: 13px;
     font-family: inherit;
+    outline: none;
+  }
+  input.f-input:focus, textarea.f-input:focus, select.f-input:focus {
+    border-color: #38bdf8;
   }
   textarea.f-input {
     min-height: 75px;
@@ -372,14 +405,14 @@
     gap: 6px;
     align-items: center;
   }
-  @media (max-width: 520px) {
+  @media (max-width: 540px) {
     .sub-item { grid-template-columns: 1fr; background: #090e17; padding: 8px; border-radius: 8px; }
   }
   .btn-small {
     background: #1e293b;
     border: 1px solid #334155;
     color: #f8fafc;
-    padding: 7px 10px;
+    padding: 7px 11px;
     border-radius: 6px;
     font-size: 12px;
     font-weight: 700;
@@ -396,30 +429,41 @@
     font-weight: 800;
     cursor: pointer;
   }
-  .btn-success {
-    background: #15803d;
+  .btn-cloud-save {
+    background: #16a34a;
     border: none;
     color: #ffffff;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
+    padding: 14px 18px;
+    border-radius: 10px;
+    font-size: 15px;
     font-weight: 800;
     cursor: pointer;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(22, 163, 74, 0.35);
+    transition: all 0.15s;
   }
+  .btn-cloud-save:hover { background: #15803d; }
+  .btn-cloud-save:disabled { background: #334155; color: #94a3b8; cursor: not-allowed; box-shadow: none; }
+
   .admin-actions {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     gap: 10px;
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid #1e293b;
   }
-  .status-msg {
-    font-size: 12px;
-    color: #4ade80;
-    margin-top: 8px;
+  .sync-status {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 14px;
+    border-radius: 8px;
     display: none;
+    line-height: 1.4;
   }
+  .sync-ok { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
+  .sync-err { background: #450a0a; color: #fca5a5; border: 1px solid #b91c1c; }
   .empty-state {
     text-align: center;
     padding: 40px 20px;
@@ -434,13 +478,22 @@
   <header>
     <div class="header-top">
       <div>
-        <h1>Учебный портал // ДЗ</h1>
-        <div class="subtitle">Актуальные задания, материалы преподавателей (PDF/PPTX) и решения</div>
+        <h1>ЭМ-242 // Портал ДЗ</h1>
+        <div class="subtitle">Задания, презентации преподавателей (PDF/PPTX) и решения</div>
       </div>
-      <button class="admin-toggle-btn" onclick="toggleAdmin()">[ Управление ]</button>
+      <div class="header-btns">
+        <button type="button" class="top-btn" onclick="toggleSchedule()">[ Расписание ]</button>
+        <button type="button" class="top-btn" onclick="toggleAdmin()">[ Управление ]</button>
+      </div>
     </div>
 
-    <!-- Встроенное поле пароля (работает во всех мобильных браузерах) -->
+    <!-- Блок расписания ЭМ-242 (фото-обрезка) -->
+    <div id="schedule-box">
+      <div style="font-weight:800; color:#f8fafc; margin-bottom:4px;">Расписание группы ЭМ-242:</div>
+      <img src="em242_schedule.png" alt="Расписание ЭМ-242" class="sched-img" />
+    </div>
+
+    <!-- Встроенное поле пароля -->
     <div id="auth-box">
       <input type="password" id="auth-pass" class="auth-input" placeholder="Пароль владельца..." />
       <button type="button" class="auth-btn" onclick="verifyPassword()">Войти</button>
@@ -453,19 +506,43 @@
     </div>
   </header>
 
-  <!-- Панель редактирования (только для владельца) -->
+  <!-- Панель управления -->
   <div id="admin-panel">
-    <div class="admin-title">Редактор заданий (Режим владельца)</div>
-    <div class="admin-note">
-      Добавь или отредактируй задания здесь, затем нажми <b>«Скачать обновлённый index.html»</b> и замени файл в своём репозитории GitHub.
+    <div class="admin-title">Редактор заданий (ЭМ-242)</div>
+
+    <div class="token-box">
+      <div class="token-title">Авто-сохранение напрямую в GitHub</div>
+      <div class="token-hint">
+        Вставь свой <b>GitHub Token (ghp_...)</b> один раз и нажми «Запомнить». После этого любые изменения (добавление или удаление заданий) будут сохраняться на сайт одной кнопкой.
+      </div>
+      <div style="display:flex; gap:8px;">
+        <input type="password" id="gh-token-input" class="f-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+        <button type="button" class="btn-small" onclick="saveGithubToken()">Запомнить</button>
+      </div>
+      <label class="check-label" style="margin-top:8px;">
+        <input type="checkbox" id="auto-push-check" checked />
+        <span style="font-size:12px;">Автоматически отправлять на сайт сразу при нажатии «Применить» или «Удалить»</span>
+      </label>
     </div>
 
     <input type="hidden" id="edit-id" value="" />
     <div class="form-grid">
       <div class="form-row">
         <div>
-          <label class="f-label">Предмет</label>
-          <input type="text" id="f-subject" class="f-input" placeholder="Например: Морской английский" />
+          <label class="f-label">Предмет (по расписанию ЭМ-242)</label>
+          <select id="f-subject" class="f-input" onchange="checkCustomSubject(this)">
+            <option value="Иностранный язык">Иностранный язык</option>
+            <option value="МДК 01.01">МДК 01.01 (Егоров Е.А.)</option>
+            <option value="МДК 01.02">МДК 01.02 (Ежов Д.М.)</option>
+            <option value="МДК 03.01">МДК 03.01</option>
+            <option value="Охрана труда на судах">Охрана труда на судах</option>
+            <option value="Метрология и стандартизация">Метрология и стандартизация</option>
+            <option value="Информационные технологии в ПД">Информационные технологии в ПД</option>
+            <option value="Организация доступной среды">Организация доступной среды (Гринимеер Е.К.)</option>
+            <option value="Физическая культура">Физическая культура (Байбакова Т.В.)</option>
+            <option value="CUSTOM">Другой предмет (ввести вручную)...</option>
+          </select>
+          <input type="text" id="f-subject-custom" class="f-input" placeholder="Введи название предмета..." style="display:none; margin-top:6px;" />
         </div>
         <div>
           <label class="f-label">Сдать до (Дата)</label>
@@ -483,36 +560,39 @@
         <textarea id="f-desc" class="f-input" placeholder="Подробности задания..."></textarea>
       </div>
 
-      <!-- Файлы от преподавателя -->
       <div>
-        <label class="f-label">Файлы от преподавателя (PPTX, PDF, методички)</label>
+        <label class="f-label">Файлы от преподавателя (PPTX, PDF, фото)</label>
         <div id="teacher-files-list" class="sub-list"></div>
         <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('teacher-files-list')">+ Добавить файл преподавателя</button>
       </div>
 
-      <!-- Решение -->
       <div>
         <label class="f-label">Текст решения / конспект (необязательно)</label>
         <textarea id="f-solution" class="f-input" placeholder="Готовый ответ, краткий пересказ или шпаргалка..."></textarea>
       </div>
 
-      <!-- Файлы решений / Тренажёры -->
       <div>
-        <label class="f-label">Файлы решения / Ссылки на HTML-тренажёры</label>
+        <label class="f-label">Файлы решений / Ссылки на HTML-тренажёры</label>
         <div id="solution-files-list" class="sub-list"></div>
-        <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('solution-files-list')">+ Добавить файл решения или ссылку</button>
+        <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('solution-files-list')">+ Добавить файл решения или тренажёр</button>
       </div>
 
-      <div style="display:flex; gap:10px;">
-        <button type="button" class="btn-primary" onclick="saveTaskFromForm()">Сохранить задание в список</button>
-        <button type="button" class="btn-small" onclick="resetForm()">Очистить форму</button>
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button type="button" class="btn-primary" onclick="saveTaskFromForm()">Применить задание</button>
+        <button type="button" class="btn-small" onclick="resetForm()">Очистить поля</button>
       </div>
-      <div id="save-status" class="status-msg">Задание сохранено в список! Ниже скачай обновлённый index.html.</div>
     </div>
 
     <div class="admin-actions">
-      <button type="button" class="btn-success" onclick="exportUpdatedHTML()">Скачать обновлённый index.html</button>
-      <button type="button" class="btn-small" onclick="copyUpdatedHTML()">Скопировать HTML-код в буфер</button>
+      <button type="button" id="cloud-save-btn" class="btn-cloud-save" onclick="autoCommitToGitHub()">
+        СОХРАНИТЬ ВСЁ НА САЙТ (В 1 КЛИК)
+      </button>
+      <div id="sync-status" class="sync-status"></div>
+
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button type="button" class="btn-small" onclick="exportUpdatedHTML()">Скачать index.html вручную</button>
+        <button type="button" class="btn-small" onclick="copyUpdatedHTML()">Скопировать HTML-код</button>
+      </div>
     </div>
   </div>
 
@@ -521,47 +601,76 @@
 </div>
 
 <script>
-// === ПАРОЛЬ ВЛАДЕЛЬЦА ===
 const OWNER_PIN = "void5689";
+const GH_USER = "Famchek";
+const GH_REPO = "homework";
+const GH_FILE = "index.html";
 
-// === БАЗА ЗАДАНИЙ (АВТОМАТИЧЕСКИ ОБНОВЛЯЕТСЯ ПРИ ЭКСПОРТЕ) ===
+const EM242_SUBJECTS = [
+  "Иностранный язык",
+  "МДК 01.01",
+  "МДК 01.02",
+  "МДК 03.01",
+  "Охрана труда на судах",
+  "Метрология и стандартизация",
+  "Информационные технологии в ПД",
+  "Организация доступной среды",
+  "Физическая культура"
+];
+
 /*TASKS_START*/
 let TASKS_DATA = [
   {
-    id: "task-1",
-    subject: "Морской английский",
-    deadline: "2026-11-02",
-    title: "Задание №4: General Description of a Ship + 30 терминов",
-    desc: "1. Выучить 30 морских терминов по корпусу, палубным механизмам и погрузке.\n2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).",
-    teacherFiles: [
-      { name: "Страница 1 (Тексты 1-2 и словарь)", url: "349.jpg", type: "OTHER" },
-      { name: "Страница 2 (Текст 3 и упражнения)", url: "350.jpg", type: "OTHER" }
+    "id": "task-1",
+    "subject": "Иностранный язык",
+    "deadline": "2026-11-02",
+    "title": "Задание №4: General Description of a Ship + 30 терминов",
+    "desc": "1. Выучить 30 морских терминов по корпусу, палубным механизмам и погрузке.\n2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).",
+    "teacherFiles": [
+      {
+        "name": "Страница 1 (Тексты 1-2 и словарь)",
+        "url": "349.jpg",
+        "type": "OTHER"
+      },
+      {
+        "name": "Страница 2 (Текст 3 и упражнения)",
+        "url": "350.jpg",
+        "type": "OTHER"
+      }
     ],
-    solutionText: "1. The main body of a ship:\nThe ship's hull is divided into bow, midships, and stern. It is formed by framing covered with plating, separating into an underwater body and freeboard. Watertight bulkheads split the interior into compartments, engine spaces, and cargo holds accessible through hatches.\n(Корпус делится на нос, мидель и корму. Состоит из набора и обшивки, делится на подводную часть и надводный борт. Водонепроницаемые переборки делят корпус на отсеки, МО и трюмы с люками.)\n\n2. On deck facilities:\nThe hull contains forepeak, afterpeak, wing, and double bottom tanks used for fuel and water storage. Above the main deck, modern superstructures are typically situated aft to maximize cargo space. The deck is equipped with cranes, winches, and derrick posts for cargo operations.\n(В корпусе расположены форпик, ахтерпик, бортовые и междудонные танки для топлива и воды. Надстройки обычно на корме для экономии места под груз. На палубе — краны, лебедки и стрелы.)\n\n3. Ship location when loading:\nUnder fluid pressure during cargo operations, uneven loading can cause the ship to incline. Extreme fore-and-aft water level differences create trim, while side-to-side inclination causes heel or list, which is monitored using draught marks.\n(Под давлением воды при погрузке неравномерная загрузка наклоняет судно. Разница уровней носа и кормы создает дифферент, а наклон на борт — крен, что контролируется по маркам углубления.)",
-    solutionFiles: [
-      { name: "Тренажёр: Квиз 30 слов", url: "marine_random_clean.html", type: "HTML" },
-      { name: "Тренажёр: PRO (Предложения + 3 жизни)", url: "marine_hardcore_quiz.html", type: "HTML" },
-      { name: "Тренажёр: Ручной ввод слов", url: "marine_typing_trainer.html", type: "HTML" }
+    "solutionText": "1. The main body of a ship:\nThe ship's hull is divided into bow, midships, and stern. It is formed by framing covered with plating, separating into an underwater body and freeboard. Watertight bulkheads split the interior into compartments, engine spaces, and cargo holds accessible through hatches.\n(Корпус делится на нос, мидель и корму. Состоит из набора и обшивки, делится на подводную часть и надводный борт. Водонепроницаемые переборки делят корпус на отсеки, МО и трюмы с люками.)\n\n2. On deck facilities:\nThe hull contains forepeak, afterpeak, wing, and double bottom tanks used for fuel and water storage. Above the main deck, modern superstructures are typically situated aft to maximize cargo space. The deck is equipped with cranes, winches, and derrick posts for cargo operations.\n(В корпусе расположены форпик, ахтерпик, бортовые и междудонные танки для топлива и воды. Надстройки обычно на корме для экономии места под груз. На палубе — краны, лебедки и стрелы.)\n\n3. Ship location when loading:\nUnder fluid pressure during cargo operations, uneven loading can cause the ship to incline. Extreme fore-and-aft water level differences create trim, while side-to-side inclination causes heel or list, which is monitored using draught marks.\n(Под давлением воды при погрузке неравномерная загрузка наклоняет судно. Разница уровней носа и кормы создает дифферент, а наклон на борт — крен, что контролируется по маркам углубления.)",
+    "solutionFiles": [
+      {
+        "name": "Тренажёр: Квиз 30 слов",
+        "url": "marine_random_clean.html",
+        "type": "HTML"
+      },
+      {
+        "name": "Тренажёр: PRO (Предложения + 3 жизни)",
+        "url": "marine_hardcore_quiz.html",
+        "type": "HTML"
+      },
+      {
+        "name": "Тренажёр: Ручной ввод слов",
+        "url": "marine_typing_trainer.html",
+        "type": "HTML"
+      }
     ]
-  },
-  {
-    id: "task-2",
-    subject: "Судовая электротехника",
-    deadline: "2026-11-06",
-    title: "Лекция и конспект: Щиты ГРЩ и фазометр",
-    desc: "Разобрать презентацию преподавателя по главному распределительному щиту (ГРЩ). Подготовить конспект в тетрадь по слайдам.",
-    teacherFiles: [
-      { name: "Презентация преподавателя (ГРЩ)", url: "grsh_lecture.pptx", type: "PPTX" },
-      { name: "Методичка ГОСТ (Схемы)", url: "gost_manual.pdf", type: "PDF" }
-    ],
-    solutionText: "Конспект разбит строго по слайдам презентации. Основные узлы: генераторные секции, синхронизация, контроль изоляции и назначение судового фазометра (контроль коэффициента мощности cos φ в судовой сети трехфазного тока).",
-    solutionFiles: []
   }
 ];
 /*TASKS_END*/
 
 let currentSubject = "ВСЕ";
 let isAdminUnlocked = false;
+
+function toggleSchedule() {
+  document.getElementById("schedule-box").classList.toggle("open");
+}
+
+function checkCustomSubject(sel) {
+  const customInp = document.getElementById("f-subject-custom");
+  customInp.style.display = (sel.value === "CUSTOM") ? "block" : "none";
+}
 
 function getCompletedMap() {
   try {
@@ -581,20 +690,16 @@ function toggleTaskDone(id) {
 function formatDeadline(dateStr) {
   if (!dateStr) return { text: "Без срока", cls: "dl-normal" };
   const parts = dateStr.split("-");
+  if (parts.length !== 3) return { text: dateStr, cls: "dl-normal" };
   const formatted = `${parts[2]}.${parts[1]}.${parts[0]}`;
-  
   const now = new Date();
   now.setHours(0,0,0,0);
   const target = new Date(dateStr + "T00:00:00");
   const diffDays = Math.round((target - now) / (1000 * 60 * 60 * 24));
 
-  if (diffDays < 0) {
-    return { text: `До ${formatted} (Просрочено)`, cls: "dl-overdue" };
-  } else if (diffDays === 0) {
-    return { text: `До ${formatted} (Сдать сегодня!)`, cls: "dl-urgent" };
-  } else if (diffDays <= 2) {
-    return { text: `До ${formatted} (Осталось ${diffDays} дн.)`, cls: "dl-urgent" };
-  }
+  if (diffDays < 0) return { text: `До ${formatted} (Просрочено)`, cls: "dl-overdue" };
+  if (diffDays === 0) return { text: `До ${formatted} (Сдать сегодня!)`, cls: "dl-urgent" };
+  if (diffDays <= 2) return { text: `До ${formatted} (Осталось ${diffDays} дн.)`, cls: "dl-urgent" };
   return { text: `До ${formatted} (${diffDays} дн.)`, cls: "dl-normal" };
 }
 
@@ -607,10 +712,11 @@ function getBadgeClass(type) {
 }
 
 function renderFilters() {
-  const subjects = ["ВСЕ", ...new Set(TASKS_DATA.map(t => t.subject.trim()).filter(Boolean))];
+  const activeSubjects = TASKS_DATA.map(t => t.subject.trim()).filter(Boolean);
+  const allFilterTabs = ["ВСЕ", ...new Set([...activeSubjects, ...EM242_SUBJECTS])];
   const bar = document.getElementById("subject-filters");
   bar.innerHTML = "";
-  subjects.forEach(subj => {
+  allFilterTabs.forEach(subj => {
     const btn = document.createElement("button");
     btn.className = "filter-btn" + (currentSubject === subj ? " active" : "");
     btn.textContent = subj;
@@ -638,7 +744,7 @@ function renderTasks() {
   });
 
   if (filtered.length === 0) {
-    container.innerHTML = `<div class="empty-state">Заданий по выбранному фильтру не найдено.</div>`;
+    container.innerHTML = `<div class="empty-state">Заданий по выбранному предмету пока нет.</div>`;
     return;
   }
 
@@ -646,16 +752,15 @@ function renderTasks() {
   filtered.forEach(task => {
     const isDone = !!completedMap[task.id];
     const dl = formatDeadline(task.deadline);
-
     const card = document.createElement("div");
     card.className = "task-card" + (isDone ? " done-card" : "");
 
     let teacherFilesHTML = "";
     if (task.teacherFiles && task.teacherFiles.length > 0) {
       const links = task.teacherFiles.map(f => `
-        <a class="file-link" href="${f.url}" target="_blank" download>
+        <a class="file-link" href="${f.url}" target="_blank">
           <span class="fmt-tag ${getBadgeClass(f.type)}">${f.type || 'FILE'}</span>
-          <span>${f.name}</span>
+          <span>${escapeHtml(f.name)}</span>
         </a>
       `).join("");
       teacherFilesHTML = `
@@ -674,16 +779,16 @@ function renderTasks() {
       const solLinks = (task.solutionFiles || []).map(f => `
         <a class="file-link" href="${f.url}" target="_blank">
           <span class="fmt-tag ${getBadgeClass(f.type)}">${f.type || 'FILE'}</span>
-          <span>${f.name}</span>
+          <span>${escapeHtml(f.name)}</span>
         </a>
       `).join("");
 
       solutionHTML = `
         <div class="section-box">
-          <div class="section-label">Решение и разбор:</div>
+          <div class="section-label">Решение и тренажёры:</div>
           ${hasSolFiles ? `<div class="files-grid" style="margin-bottom: ${hasSolText ? '10px' : '0'};">${solLinks}</div>` : ""}
           ${hasSolText ? `
-            <button class="solution-toggle" onclick="toggleSolution('sol-${task.id}', this)">[+] Показать текстовое решение / конспект</button>
+            <button type="button" class="solution-toggle" onclick="toggleSolution('sol-${task.id}', this)">[+] Показать текстовое решение / пересказ</button>
             <div id="sol-${task.id}" class="solution-content">${escapeHtml(task.solutionText)}</div>
           ` : ""}
         </div>
@@ -694,8 +799,8 @@ function renderTasks() {
     if (isAdminUnlocked) {
       adminButtonsHTML = `
         <div style="display:flex; gap:8px;">
-          <button class="btn-small" onclick="loadTaskToForm('${task.id}')">Изменить</button>
-          <button class="btn-small btn-danger" onclick="deleteTask('${task.id}')">Удалить</button>
+          <button type="button" class="btn-small" onclick="loadTaskToForm('${task.id}')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('${task.id}')">Удалить</button>
         </div>
       `;
     }
@@ -703,9 +808,7 @@ function renderTasks() {
     card.innerHTML = `
       <div class="card-meta">
         <span class="subject-badge">${escapeHtml(task.subject)}</span>
-        <div class="deadline-wrap">
-          <span class="deadline-badge ${dl.cls}">${dl.text}</span>
-        </div>
+        <span class="deadline-badge ${dl.cls}">${dl.text}</span>
       </div>
       <div class="task-title">${escapeHtml(task.title)}</div>
       <div class="task-desc">${escapeHtml(task.desc)}</div>
@@ -719,7 +822,6 @@ function renderTasks() {
         ${adminButtonsHTML}
       </div>
     `;
-
     container.appendChild(card);
   });
 }
@@ -728,17 +830,13 @@ function toggleSolution(elemId, btn) {
   const el = document.getElementById(elemId);
   if (!el) return;
   const isOpen = el.classList.toggle("open");
-  btn.textContent = isOpen ? "[-] Скрыть текстовое решение" : "[+] Показать текстовое решение / конспект";
+  btn.textContent = isOpen ? "[-] Скрыть текстовое решение" : "[+] Показать текстовое решение / пересказ";
 }
 
 function escapeHtml(str) {
-  return (str || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  return (str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
 
-// === ЛОГИКА РЕДАКТОРА ВЛАДЕЛЬЦА ===
 function toggleAdmin() {
   const panel = document.getElementById("admin-panel");
   const authBox = document.getElementById("auth-box");
@@ -768,23 +866,114 @@ function verifyPassword() {
     authErr.style.display = "none";
     document.getElementById("auth-pass").value = "";
     panel.style.display = "block";
+    loadStoredToken();
     renderTasks();
   } else {
     authErr.style.display = "block";
   }
 }
 
-document.getElementById("auth-pass").addEventListener("keypress", function(e) {
+document.getElementById("auth-pass").addEventListener("keypress", (e) => {
   if (e.key === "Enter") verifyPassword();
 });
+
+function saveGithubToken() {
+  const t = document.getElementById("gh-token-input").value.trim();
+  if (!t) return;
+  localStorage.setItem("gh_pat_token", t);
+  const statusBox = document.getElementById("sync-status");
+  statusBox.className = "sync-status sync-ok";
+  statusBox.textContent = "Токен сохранён в браузере телефона.";
+  statusBox.style.display = "block";
+}
+
+function loadStoredToken() {
+  const saved = localStorage.getItem("gh_pat_token");
+  if (saved) {
+    document.getElementById("gh-token-input").value = saved;
+  }
+}
+
+async function autoCommitToGitHub() {
+  const token = document.getElementById("gh-token-input").value.trim() || localStorage.getItem("gh_pat_token");
+  const statusBox = document.getElementById("sync-status");
+  const btn = document.getElementById("cloud-save-btn");
+
+  if (!token) {
+    statusBox.className = "sync-status sync-err";
+    statusBox.textContent = "Вставь GitHub Token (ghp_...) в поле выше и нажми «Запомнить», либо скачай index.html кнопкой ниже.";
+    statusBox.style.display = "block";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Сохранение на GitHub...";
+  statusBox.style.display = "none";
+
+  try {
+    const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
+    const getRes = await fetch(url, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+
+    if (!getRes.ok) {
+      throw new Error(`Код ${getRes.status}. Проверь токен и права repo.`);
+    }
+
+    const fileData = await getRes.json();
+    const updatedHtml = buildUpdatedHTMLString();
+    const contentBase64 = btoa(unescape(encodeURIComponent(updatedHtml)));
+
+    const putRes = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        message: "Update tasks EM-242",
+        content: contentBase64,
+        sha: fileData.sha
+      })
+    });
+
+    if (!putRes.ok) {
+      const errInfo = await putRes.json();
+      throw new Error(errInfo.message || "Ошибка записи файла");
+    }
+
+    statusBox.className = "sync-status sync-ok";
+    statusBox.textContent = "Сохранено! Изменения отправлены в репозиторий GitHub (обновится на сайте через 30 сек).";
+    statusBox.style.display = "block";
+  } catch (err) {
+    statusBox.className = "sync-status sync-err";
+    statusBox.textContent = "Ошибка автосохранения: " + err.message;
+    statusBox.style.display = "block";
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "СОХРАНИТЬ ВСЁ НА САЙТ (В 1 КЛИК)";
+  }
+}
+
+function triggerAutoPushIfEnabled() {
+  const autoCheck = document.getElementById("auto-push-check");
+  const token = document.getElementById("gh-token-input").value.trim() || localStorage.getItem("gh_pat_token");
+  if (autoCheck && autoCheck.checked && token) {
+    autoCommitToGitHub();
+  }
+}
 
 function addFileRow(containerId, name = "", url = "", type = "PDF") {
   const container = document.getElementById(containerId);
   const row = document.createElement("div");
   row.className = "sub-item";
   row.innerHTML = `
-    <input type="text" class="f-input file-name" placeholder="Название кнопки (напр. Лекция 1)" value="${name.replace(/"/g, '&quot;')}" />
-    <input type="text" class="f-input file-url" placeholder="Имя файла (lecture.pptx) или ссылка" value="${url.replace(/"/g, '&quot;')}" />
+    <input type="text" class="f-input file-name" placeholder="Название кнопки" value="${name.replace(/"/g, '&quot;')}" />
+    <input type="text" class="f-input file-url" placeholder="Имя файла (lecture.pptx) или URL" value="${url.replace(/"/g, '&quot;')}" />
     <select class="f-input file-type">
       <option value="PDF" ${type === "PDF" ? "selected" : ""}>PDF</option>
       <option value="PPTX" ${type === "PPTX" ? "selected" : ""}>PPTX</option>
@@ -810,7 +999,10 @@ function readFilesFromContainer(containerId) {
 
 function saveTaskFromForm() {
   const id = document.getElementById("edit-id").value || ("task-" + Date.now());
-  const subject = document.getElementById("f-subject").value.trim() || "Общее";
+  const selSubj = document.getElementById("f-subject").value;
+  const customSubj = document.getElementById("f-subject-custom").value.trim();
+  const subject = (selSubj === "CUSTOM") ? (customSubj || "Общее") : selSubj;
+
   const deadline = document.getElementById("f-deadline").value;
   const title = document.getElementById("f-title").value.trim();
   const desc = document.getElementById("f-desc").value.trim();
@@ -833,16 +1025,25 @@ function saveTaskFromForm() {
   resetForm();
   renderFilters();
   renderTasks();
-  const st = document.getElementById("save-status");
-  st.style.display = "block";
-  setTimeout(() => { st.style.display = "none"; }, 4000);
+  triggerAutoPushIfEnabled();
 }
 
 function loadTaskToForm(id) {
   const t = TASKS_DATA.find(item => item.id === id);
   if (!t) return;
   document.getElementById("edit-id").value = t.id;
-  document.getElementById("f-subject").value = t.subject;
+
+  const sel = document.getElementById("f-subject");
+  const customInp = document.getElementById("f-subject-custom");
+  if (EM242_SUBJECTS.includes(t.subject)) {
+    sel.value = t.subject;
+    customInp.style.display = "none";
+  } else {
+    sel.value = "CUSTOM";
+    customInp.style.display = "block";
+    customInp.value = t.subject;
+  }
+
   document.getElementById("f-deadline").value = t.deadline;
   document.getElementById("f-title").value = t.title;
   document.getElementById("f-desc").value = t.desc;
@@ -861,11 +1062,14 @@ function deleteTask(id) {
   TASKS_DATA = TASKS_DATA.filter(t => t.id !== id);
   renderFilters();
   renderTasks();
+  triggerAutoPushIfEnabled();
 }
 
 function resetForm() {
   document.getElementById("edit-id").value = "";
-  document.getElementById("f-subject").value = "";
+  document.getElementById("f-subject").value = "Иностранный язык";
+  document.getElementById("f-subject-custom").style.display = "none";
+  document.getElementById("f-subject-custom").value = "";
   document.getElementById("f-deadline").value = "";
   document.getElementById("f-title").value = "";
   document.getElementById("f-desc").value = "";
@@ -877,18 +1081,24 @@ function resetForm() {
 function buildUpdatedHTMLString() {
   const authBox = document.getElementById("auth-box");
   const adminPanel = document.getElementById("admin-panel");
+  const schedBox = document.getElementById("schedule-box");
   const prevAuth = authBox.className;
   const prevPanel = adminPanel.style.display;
+  const prevSched = schedBox.className;
+
   authBox.className = "";
   adminPanel.style.display = "none";
+  schedBox.className = "";
 
   const currentDoc = document.documentElement.outerHTML;
+
   authBox.className = prevAuth;
   adminPanel.style.display = prevPanel;
+  schedBox.className = prevSched;
 
   const jsonBlock = "/*TASKS_START*/\nlet TASKS_DATA = " + JSON.stringify(TASKS_DATA, null, 2) + ";\n/*TASKS_END*/";
   const regex = /\/\*TASKS_START\*\/[\s\S]*?\/\*TASKS_END\*\//;
-  return "<!DOCTYPE html>\n" + currentDoc.replace(regex, jsonBlock);
+  return "<!DOCTYPE html>\n" + currentDoc.replace(regex, () => jsonBlock);
 }
 
 function exportUpdatedHTML() {
