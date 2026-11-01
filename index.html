@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Учебный портал | Задания и решения</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #090e17;
+    color: #f1f5f9;
+    line-height: 1.5;
+    padding: 16px;
+    padding-bottom: 60px;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  header {
+    background: #141e33;
+    border: 1px solid #1e2e4f;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.01em;
+  }
+  .subtitle {
+    font-size: 13px;
+    color: #94a3b8;
+  }
+  .admin-toggle-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .admin-toggle-btn:hover {
+    color: #ffffff;
+    border-color: #38bdf8;
+  }
+  /* Блок ввода пароля */
+  #auth-box {
+    display: none;
+    background: #0d1524;
+    border: 1px solid #2d3b55;
+    border-radius: 10px;
+    padding: 12px;
+    margin-bottom: 14px;
+    gap: 8px;
+    align-items: center;
+  }
+  #auth-box.open {
+    display: flex;
+  }
+  .auth-input {
+    flex: 1;
+    background: #141e33;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 9px 12px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+  }
+  .auth-input:focus { border-color: #38bdf8; }
+  .auth-btn {
+    background: #0284c7;
+    border: none;
+    color: #ffffff;
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .auth-err {
+    font-size: 12px;
+    color: #f87171;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .search-input {
+    width: 100%;
+    background: #0d1524;
+    border: 1px solid #2d3b55;
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+  }
+  .search-input:focus {
+    border-color: #38bdf8;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .filter-btn {
+    background: #0d1524;
+    border: 1px solid #2d3b55;
+    color: #94a3b8;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .filter-btn.active {
+    background: #0284c7;
+    border-color: #38bdf8;
+    color: #ffffff;
+  }
+
+  /* Карточка задания */
+  .task-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .task-card {
+    background: #141e33;
+    border: 1px solid #1e2e4f;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    transition: border-color 0.2s;
+  }
+  .task-card.done-card {
+    opacity: 0.72;
+    border-color: #15803d;
+  }
+  .card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+  .subject-badge {
+    background: #0369a1;
+    color: #e0f2fe;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .deadline-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .deadline-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .dl-normal { background: #1e293b; color: #38bdf8; border: 1px solid #334155; }
+  .dl-urgent { background: #451a03; color: #fbbf24; border: 1px solid #b45309; }
+  .dl-overdue { background: #450a0a; color: #f87171; border: 1px solid #b91c1c; }
+
+  .task-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 8px;
+  }
+  .task-desc {
+    font-size: 14px;
+    color: #cbd5e1;
+    white-space: pre-wrap;
+    margin-bottom: 14px;
+  }
+
+  /* Секции файлов и решений */
+  .section-box {
+    background: #0d1524;
+    border: 1px solid #1e293b;
+    border-radius: 10px;
+    padding: 12px;
+    margin-top: 10px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+  .files-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .file-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1b263b;
+    border: 1px solid #2d3b55;
+    color: #f8fafc;
+    text-decoration: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .file-link:hover {
+    background: #243350;
+    border-color: #38bdf8;
+  }
+  .fmt-tag {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+  .fmt-pdf { background: #dc2626; color: #ffffff; }
+  .fmt-pptx { background: #ea580c; color: #ffffff; }
+  .fmt-html { background: #0284c7; color: #ffffff; }
+  .fmt-other { background: #475569; color: #ffffff; }
+
+  .solution-toggle {
+    background: none;
+    border: none;
+    color: #38bdf8;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 4px 0;
+    margin-bottom: 6px;
+  }
+  .solution-content {
+    font-size: 13px;
+    color: #e2e8f0;
+    white-space: pre-wrap;
+    border-top: 1px solid #1e293b;
+    padding-top: 10px;
+    margin-top: 6px;
+    display: none;
+  }
+  .solution-content.open {
+    display: block;
+  }
+
+  .card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid #1e293b;
+  }
+  .check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #94a3b8;
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-label input {
+    width: 16px;
+    height: 16px;
+    accent-color: #16a34a;
+    cursor: pointer;
+  }
+
+  /* Панель владельца (Генератор) */
+  #admin-panel {
+    display: none;
+    background: #141e33;
+    border: 2px solid #0284c7;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .admin-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #38bdf8;
+    margin-bottom: 6px;
+  }
+  .admin-note {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 16px;
+  }
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  @media (max-width: 520px) {
+    .form-row { grid-template-columns: 1fr; }
+  }
+  label.f-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #cbd5e1;
+    margin-bottom: 4px;
+  }
+  input.f-input, textarea.f-input, select.f-input {
+    width: 100%;
+    background: #090e17;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #ffffff;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  textarea.f-input {
+    min-height: 75px;
+    resize: vertical;
+  }
+  .sub-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .sub-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto auto;
+    gap: 6px;
+    align-items: center;
+  }
+  @media (max-width: 520px) {
+    .sub-item { grid-template-columns: 1fr; background: #090e17; padding: 8px; border-radius: 8px; }
+  }
+  .btn-small {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #f8fafc;
+    padding: 7px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .btn-danger { background: #7f1d1d; border-color: #b91c1c; }
+  .btn-primary {
+    background: #0284c7;
+    border: none;
+    color: #ffffff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .btn-success {
+    background: #15803d;
+    border: none;
+    color: #ffffff;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .admin-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #1e293b;
+  }
+  .status-msg {
+    font-size: 12px;
+    color: #4ade80;
+    margin-top: 8px;
+    display: none;
+  }
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #64748b;
+    font-size: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-top">
+      <div>
+        <h1>Учебный портал // ДЗ</h1>
+        <div class="subtitle">Актуальные задания, материалы преподавателей (PDF/PPTX) и решения</div>
+      </div>
+      <button class="admin-toggle-btn" onclick="toggleAdmin()">[ Управление ]</button>
+    </div>
+
+    <!-- Встроенное поле пароля (работает во всех мобильных браузерах) -->
+    <div id="auth-box">
+      <input type="password" id="auth-pass" class="auth-input" placeholder="Пароль владельца..." />
+      <button type="button" class="auth-btn" onclick="verifyPassword()">Войти</button>
+    </div>
+    <div id="auth-err" class="auth-err">Неверный пароль. Доступ только для владельца.</div>
+
+    <div class="controls">
+      <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()" />
+      <div class="filter-bar" id="subject-filters"></div>
+    </div>
+  </header>
+
+  <!-- Панель редактирования (только для владельца) -->
+  <div id="admin-panel">
+    <div class="admin-title">Редактор заданий (Режим владельца)</div>
+    <div class="admin-note">
+      Добавь или отредактируй задания здесь, затем нажми <b>«Скачать обновлённый index.html»</b> и замени файл в своём репозитории GitHub.
+    </div>
+
+    <input type="hidden" id="edit-id" value="" />
+    <div class="form-grid">
+      <div class="form-row">
+        <div>
+          <label class="f-label">Предмет</label>
+          <input type="text" id="f-subject" class="f-input" placeholder="Например: Морской английский" />
+        </div>
+        <div>
+          <label class="f-label">Сдать до (Дата)</label>
+          <input type="date" id="f-deadline" class="f-input" />
+        </div>
+      </div>
+
+      <div>
+        <label class="f-label">Заголовок задания</label>
+        <input type="text" id="f-title" class="f-input" placeholder="Например: Задание №4 — Строение судна и термины" />
+      </div>
+
+      <div>
+        <label class="f-label">Описание (что нужно сделать)</label>
+        <textarea id="f-desc" class="f-input" placeholder="Подробности задания..."></textarea>
+      </div>
+
+      <!-- Файлы от преподавателя -->
+      <div>
+        <label class="f-label">Файлы от преподавателя (PPTX, PDF, методички)</label>
+        <div id="teacher-files-list" class="sub-list"></div>
+        <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('teacher-files-list')">+ Добавить файл преподавателя</button>
+      </div>
+
+      <!-- Решение -->
+      <div>
+        <label class="f-label">Текст решения / конспект (необязательно)</label>
+        <textarea id="f-solution" class="f-input" placeholder="Готовый ответ, краткий пересказ или шпаргалка..."></textarea>
+      </div>
+
+      <!-- Файлы решений / Тренажёры -->
+      <div>
+        <label class="f-label">Файлы решения / Ссылки на HTML-тренажёры</label>
+        <div id="solution-files-list" class="sub-list"></div>
+        <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('solution-files-list')">+ Добавить файл решения или ссылку</button>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn-primary" onclick="saveTaskFromForm()">Сохранить задание в список</button>
+        <button type="button" class="btn-small" onclick="resetForm()">Очистить форму</button>
+      </div>
+      <div id="save-status" class="status-msg">Задание сохранено в список! Ниже скачай обновлённый index.html.</div>
+    </div>
+
+    <div class="admin-actions">
+      <button type="button" class="btn-success" onclick="exportUpdatedHTML()">Скачать обновлённый index.html</button>
+      <button type="button" class="btn-small" onclick="copyUpdatedHTML()">Скопировать HTML-код в буфер</button>
+    </div>
+  </div>
+
+  <!-- Список карточек заданий -->
+  <div id="tasks-container" class="task-list"></div>
+</div>
+
+<script>
+// === ПАРОЛЬ ВЛАДЕЛЬЦА ===
+const OWNER_PIN = "void5689";
+
+// === БАЗА ЗАДАНИЙ (АВТОМАТИЧЕСКИ ОБНОВЛЯЕТСЯ ПРИ ЭКСПОРТЕ) ===
+/*TASKS_START*/
+let TASKS_DATA = [
+  {
+    id: "task-1",
+    subject: "Морской английский",
+    deadline: "2026-11-02",
+    title: "Задание №4: General Description of a Ship + 30 терминов",
+    desc: "1. Выучить 30 морских терминов по корпусу, палубным механизмам и погрузке.\n2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).",
+    teacherFiles: [
+      { name: "Страница 1 (Тексты 1-2 и словарь)", url: "349.jpg", type: "OTHER" },
+      { name: "Страница 2 (Текст 3 и упражнения)", url: "350.jpg", type: "OTHER" }
+    ],
+    solutionText: "1. The main body of a ship:\nThe ship's hull is divided into bow, midships, and stern. It is formed by framing covered with plating, separating into an underwater body and freeboard. Watertight bulkheads split the interior into compartments, engine spaces, and cargo holds accessible through hatches.\n(Корпус делится на нос, мидель и корму. Состоит из набора и обшивки, делится на подводную часть и надводный борт. Водонепроницаемые переборки делят корпус на отсеки, МО и трюмы с люками.)\n\n2. On deck facilities:\nThe hull contains forepeak, afterpeak, wing, and double bottom tanks used for fuel and water storage. Above the main deck, modern superstructures are typically situated aft to maximize cargo space. The deck is equipped with cranes, winches, and derrick posts for cargo operations.\n(В корпусе расположены форпик, ахтерпик, бортовые и междудонные танки для топлива и воды. Надстройки обычно на корме для экономии места под груз. На палубе — краны, лебедки и стрелы.)\n\n3. Ship location when loading:\nUnder fluid pressure during cargo operations, uneven loading can cause the ship to incline. Extreme fore-and-aft water level differences create trim, while side-to-side inclination causes heel or list, which is monitored using draught marks.\n(Под давлением воды при погрузке неравномерная загрузка наклоняет судно. Разница уровней носа и кормы создает дифферент, а наклон на борт — крен, что контролируется по маркам углубления.)",
+    solutionFiles: [
+      { name: "Тренажёр: Квиз 30 слов", url: "marine_random_clean.html", type: "HTML" },
+      { name: "Тренажёр: PRO (Предложения + 3 жизни)", url: "marine_hardcore_quiz.html", type: "HTML" },
+      { name: "Тренажёр: Ручной ввод слов", url: "marine_typing_trainer.html", type: "HTML" }
+    ]
+  },
+  {
+    id: "task-2",
+    subject: "Судовая электротехника",
+    deadline: "2026-11-06",
+    title: "Лекция и конспект: Щиты ГРЩ и фазометр",
+    desc: "Разобрать презентацию преподавателя по главному распределительному щиту (ГРЩ). Подготовить конспект в тетрадь по слайдам.",
+    teacherFiles: [
+      { name: "Презентация преподавателя (ГРЩ)", url: "grsh_lecture.pptx", type: "PPTX" },
+      { name: "Методичка ГОСТ (Схемы)", url: "gost_manual.pdf", type: "PDF" }
+    ],
+    solutionText: "Конспект разбит строго по слайдам презентации. Основные узлы: генераторные секции, синхронизация, контроль изоляции и назначение судового фазометра (контроль коэффициента мощности cos φ в судовой сети трехфазного тока).",
+    solutionFiles: []
+  }
+];
+/*TASKS_END*/
+
+let currentSubject = "ВСЕ";
+let isAdminUnlocked = false;
+
+function getCompletedMap() {
+  try {
+    return JSON.parse(localStorage.getItem("hw_completed_tasks") || "{}");
+  } catch (e) {
+    return {};
+  }
+}
+
+function toggleTaskDone(id) {
+  const map = getCompletedMap();
+  map[id] = !map[id];
+  localStorage.setItem("hw_completed_tasks", JSON.stringify(map));
+  renderTasks();
+}
+
+function formatDeadline(dateStr) {
+  if (!dateStr) return { text: "Без срока", cls: "dl-normal" };
+  const parts = dateStr.split("-");
+  const formatted = `${parts[2]}.${parts[1]}.${parts[0]}`;
+  
+  const now = new Date();
+  now.setHours(0,0,0,0);
+  const target = new Date(dateStr + "T00:00:00");
+  const diffDays = Math.round((target - now) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) {
+    return { text: `До ${formatted} (Просрочено)`, cls: "dl-overdue" };
+  } else if (diffDays === 0) {
+    return { text: `До ${formatted} (Сдать сегодня!)`, cls: "dl-urgent" };
+  } else if (diffDays <= 2) {
+    return { text: `До ${formatted} (Осталось ${diffDays} дн.)`, cls: "dl-urgent" };
+  }
+  return { text: `До ${formatted} (${diffDays} дн.)`, cls: "dl-normal" };
+}
+
+function getBadgeClass(type) {
+  const t = (type || "").toUpperCase();
+  if (t === "PDF") return "fmt-pdf";
+  if (t === "PPTX") return "fmt-pptx";
+  if (t === "HTML") return "fmt-html";
+  return "fmt-other";
+}
+
+function renderFilters() {
+  const subjects = ["ВСЕ", ...new Set(TASKS_DATA.map(t => t.subject.trim()).filter(Boolean))];
+  const bar = document.getElementById("subject-filters");
+  bar.innerHTML = "";
+  subjects.forEach(subj => {
+    const btn = document.createElement("button");
+    btn.className = "filter-btn" + (currentSubject === subj ? " active" : "");
+    btn.textContent = subj;
+    btn.onclick = () => {
+      currentSubject = subj;
+      renderFilters();
+      renderTasks();
+    };
+    bar.appendChild(btn);
+  });
+}
+
+function renderTasks() {
+  const container = document.getElementById("tasks-container");
+  const query = document.getElementById("search-box").value.toLowerCase().trim();
+  const completedMap = getCompletedMap();
+
+  const filtered = TASKS_DATA.filter(t => {
+    const matchSubj = (currentSubject === "ВСЕ") || (t.subject === currentSubject);
+    const matchQuery = !query || 
+      t.title.toLowerCase().includes(query) || 
+      t.subject.toLowerCase().includes(query) || 
+      t.desc.toLowerCase().includes(query);
+    return matchSubj && matchQuery;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = `<div class="empty-state">Заданий по выбранному фильтру не найдено.</div>`;
+    return;
+  }
+
+  container.innerHTML = "";
+  filtered.forEach(task => {
+    const isDone = !!completedMap[task.id];
+    const dl = formatDeadline(task.deadline);
+
+    const card = document.createElement("div");
+    card.className = "task-card" + (isDone ? " done-card" : "");
+
+    let teacherFilesHTML = "";
+    if (task.teacherFiles && task.teacherFiles.length > 0) {
+      const links = task.teacherFiles.map(f => `
+        <a class="file-link" href="${f.url}" target="_blank" download>
+          <span class="fmt-tag ${getBadgeClass(f.type)}">${f.type || 'FILE'}</span>
+          <span>${f.name}</span>
+        </a>
+      `).join("");
+      teacherFilesHTML = `
+        <div class="section-box">
+          <div class="section-label">Материалы от преподавателя:</div>
+          <div class="files-grid">${links}</div>
+        </div>
+      `;
+    }
+
+    let solutionHTML = "";
+    const hasSolText = task.solutionText && task.solutionText.trim().length > 0;
+    const hasSolFiles = task.solutionFiles && task.solutionFiles.length > 0;
+
+    if (hasSolText || hasSolFiles) {
+      const solLinks = (task.solutionFiles || []).map(f => `
+        <a class="file-link" href="${f.url}" target="_blank">
+          <span class="fmt-tag ${getBadgeClass(f.type)}">${f.type || 'FILE'}</span>
+          <span>${f.name}</span>
+        </a>
+      `).join("");
+
+      solutionHTML = `
+        <div class="section-box">
+          <div class="section-label">Решение и разбор:</div>
+          ${hasSolFiles ? `<div class="files-grid" style="margin-bottom: ${hasSolText ? '10px' : '0'};">${solLinks}</div>` : ""}
+          ${hasSolText ? `
+            <button class="solution-toggle" onclick="toggleSolution('sol-${task.id}', this)">[+] Показать текстовое решение / конспект</button>
+            <div id="sol-${task.id}" class="solution-content">${escapeHtml(task.solutionText)}</div>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    let adminButtonsHTML = "";
+    if (isAdminUnlocked) {
+      adminButtonsHTML = `
+        <div style="display:flex; gap:8px;">
+          <button class="btn-small" onclick="loadTaskToForm('${task.id}')">Изменить</button>
+          <button class="btn-small btn-danger" onclick="deleteTask('${task.id}')">Удалить</button>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="card-meta">
+        <span class="subject-badge">${escapeHtml(task.subject)}</span>
+        <div class="deadline-wrap">
+          <span class="deadline-badge ${dl.cls}">${dl.text}</span>
+        </div>
+      </div>
+      <div class="task-title">${escapeHtml(task.title)}</div>
+      <div class="task-desc">${escapeHtml(task.desc)}</div>
+      ${teacherFilesHTML}
+      ${solutionHTML}
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" ${isDone ? "checked" : ""} onchange="toggleTaskDone('${task.id}')" />
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        ${adminButtonsHTML}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+function toggleSolution(elemId, btn) {
+  const el = document.getElementById(elemId);
+  if (!el) return;
+  const isOpen = el.classList.toggle("open");
+  btn.textContent = isOpen ? "[-] Скрыть текстовое решение" : "[+] Показать текстовое решение / конспект";
+}
+
+function escapeHtml(str) {
+  return (str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+// === ЛОГИКА РЕДАКТОРА ВЛАДЕЛЬЦА ===
+function toggleAdmin() {
+  const panel = document.getElementById("admin-panel");
+  const authBox = document.getElementById("auth-box");
+  const authErr = document.getElementById("auth-err");
+
+  if (!isAdminUnlocked) {
+    authBox.classList.toggle("open");
+    authErr.style.display = "none";
+    if (authBox.classList.contains("open")) {
+      document.getElementById("auth-pass").focus();
+    }
+    return;
+  }
+  panel.style.display = (panel.style.display === "block") ? "none" : "block";
+  renderTasks();
+}
+
+function verifyPassword() {
+  const val = document.getElementById("auth-pass").value.trim();
+  const authBox = document.getElementById("auth-box");
+  const authErr = document.getElementById("auth-err");
+  const panel = document.getElementById("admin-panel");
+
+  if (val === OWNER_PIN) {
+    isAdminUnlocked = true;
+    authBox.classList.remove("open");
+    authErr.style.display = "none";
+    document.getElementById("auth-pass").value = "";
+    panel.style.display = "block";
+    renderTasks();
+  } else {
+    authErr.style.display = "block";
+  }
+}
+
+document.getElementById("auth-pass").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") verifyPassword();
+});
+
+function addFileRow(containerId, name = "", url = "", type = "PDF") {
+  const container = document.getElementById(containerId);
+  const row = document.createElement("div");
+  row.className = "sub-item";
+  row.innerHTML = `
+    <input type="text" class="f-input file-name" placeholder="Название кнопки (напр. Лекция 1)" value="${name.replace(/"/g, '&quot;')}" />
+    <input type="text" class="f-input file-url" placeholder="Имя файла (lecture.pptx) или ссылка" value="${url.replace(/"/g, '&quot;')}" />
+    <select class="f-input file-type">
+      <option value="PDF" ${type === "PDF" ? "selected" : ""}>PDF</option>
+      <option value="PPTX" ${type === "PPTX" ? "selected" : ""}>PPTX</option>
+      <option value="HTML" ${type === "HTML" ? "selected" : ""}>HTML</option>
+      <option value="OTHER" ${type === "OTHER" ? "selected" : ""}>Другое</option>
+    </select>
+    <button type="button" class="btn-small btn-danger" onclick="this.parentElement.remove()">X</button>
+  `;
+  container.appendChild(row);
+}
+
+function readFilesFromContainer(containerId) {
+  const rows = document.querySelectorAll(`#${containerId} .sub-item`);
+  const res = [];
+  rows.forEach(r => {
+    const name = r.querySelector(".file-name").value.trim();
+    const url = r.querySelector(".file-url").value.trim();
+    const type = r.querySelector(".file-type").value;
+    if (name && url) res.push({ name, url, type });
+  });
+  return res;
+}
+
+function saveTaskFromForm() {
+  const id = document.getElementById("edit-id").value || ("task-" + Date.now());
+  const subject = document.getElementById("f-subject").value.trim() || "Общее";
+  const deadline = document.getElementById("f-deadline").value;
+  const title = document.getElementById("f-title").value.trim();
+  const desc = document.getElementById("f-desc").value.trim();
+  const solutionText = document.getElementById("f-solution").value.trim();
+
+  if (!title) return;
+
+  const teacherFiles = readFilesFromContainer("teacher-files-list");
+  const solutionFiles = readFilesFromContainer("solution-files-list");
+
+  const newTask = { id, subject, deadline, title, desc, teacherFiles, solutionText, solutionFiles };
+
+  const existingIndex = TASKS_DATA.findIndex(t => t.id === id);
+  if (existingIndex >= 0) {
+    TASKS_DATA[existingIndex] = newTask;
+  } else {
+    TASKS_DATA.unshift(newTask);
+  }
+
+  resetForm();
+  renderFilters();
+  renderTasks();
+  const st = document.getElementById("save-status");
+  st.style.display = "block";
+  setTimeout(() => { st.style.display = "none"; }, 4000);
+}
+
+function loadTaskToForm(id) {
+  const t = TASKS_DATA.find(item => item.id === id);
+  if (!t) return;
+  document.getElementById("edit-id").value = t.id;
+  document.getElementById("f-subject").value = t.subject;
+  document.getElementById("f-deadline").value = t.deadline;
+  document.getElementById("f-title").value = t.title;
+  document.getElementById("f-desc").value = t.desc;
+  document.getElementById("f-solution").value = t.solutionText || "";
+
+  document.getElementById("teacher-files-list").innerHTML = "";
+  (t.teacherFiles || []).forEach(f => addFileRow("teacher-files-list", f.name, f.url, f.type));
+
+  document.getElementById("solution-files-list").innerHTML = "";
+  (t.solutionFiles || []).forEach(f => addFileRow("solution-files-list", f.name, f.url, f.type));
+
+  document.getElementById("admin-panel").scrollIntoView({ behavior: "smooth" });
+}
+
+function deleteTask(id) {
+  TASKS_DATA = TASKS_DATA.filter(t => t.id !== id);
+  renderFilters();
+  renderTasks();
+}
+
+function resetForm() {
+  document.getElementById("edit-id").value = "";
+  document.getElementById("f-subject").value = "";
+  document.getElementById("f-deadline").value = "";
+  document.getElementById("f-title").value = "";
+  document.getElementById("f-desc").value = "";
+  document.getElementById("f-solution").value = "";
+  document.getElementById("teacher-files-list").innerHTML = "";
+  document.getElementById("solution-files-list").innerHTML = "";
+}
+
+function buildUpdatedHTMLString() {
+  const authBox = document.getElementById("auth-box");
+  const adminPanel = document.getElementById("admin-panel");
+  const prevAuth = authBox.className;
+  const prevPanel = adminPanel.style.display;
+  authBox.className = "";
+  adminPanel.style.display = "none";
+
+  const currentDoc = document.documentElement.outerHTML;
+  authBox.className = prevAuth;
+  adminPanel.style.display = prevPanel;
+
+  const jsonBlock = "/*TASKS_START*/\nlet TASKS_DATA = " + JSON.stringify(TASKS_DATA, null, 2) + ";\n/*TASKS_END*/";
+  const regex = /\/\*TASKS_START\*\/[\s\S]*?\/\*TASKS_END\*\//;
+  return "<!DOCTYPE html>\n" + currentDoc.replace(regex, jsonBlock);
+}
+
+function exportUpdatedHTML() {
+  const fullHtml = buildUpdatedHTMLString();
+  const blob = new Blob([fullHtml], { type: "text/html;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "index.html";
+  link.click();
+}
+
+function copyUpdatedHTML() {
+  const fullHtml = buildUpdatedHTMLString();
+  navigator.clipboard.writeText(fullHtml);
+}
+
+renderFilters();
+renderTasks();
+</script>
+
+</body>
+</html>
