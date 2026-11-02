@@ -594,7 +594,28 @@
   </div>
 
   <!-- Список карточек заданий -->
-  <div id="tasks-container" class="task-list"><div class="task-card done-card">
+  <div id="tasks-container" class="task-list"><div class="task-card">
+      <div class="card-meta">
+        <span class="subject-badge">Иностранный язык</span>
+        <span class="deadline-badge dl-normal">До 09.11.2026 (7 дн.)</span>
+      </div>
+      <div class="task-title">Задание N-7</div>
+      <div class="task-desc">Выполнить задание N-7</div>
+      
+      
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" onchange="toggleTaskDone('task-1793608648225')">
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1793608648225')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1793608648225')">Удалить</button>
+        </div>
+      
+      </div>
+    </div><div class="task-card done-card">
       <div class="card-meta">
         <span class="subject-badge">Иностранный язык</span>
         <span class="deadline-badge dl-urgent">До 02.11.2026 (Сдать сегодня!)</span>
@@ -688,6 +709,16 @@ const EM242_SUBJECTS = [
 
 /*TASKS_START*/
 let TASKS_DATA = [
+  {
+    "id": "task-1793608648225",
+    "subject": "Иностранный язык",
+    "deadline": "2026-11-09",
+    "title": "Задание N-7",
+    "desc": "Выполнить задание N-7",
+    "teacherFiles": [],
+    "solutionText": "",
+    "solutionFiles": []
+  },
   {
     "id": "task-1",
     "subject": "Иностранный язык",
