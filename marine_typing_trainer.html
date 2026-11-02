@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Морской тренажёр: Ввод слов</title>
+<title>Морской тренажёр: Все 62 слова (Ввод)</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -126,8 +126,8 @@
 
 <div class="card" id="trainer-card">
   <div class="top-stats">
-    <span class="counter" id="q-counter">Слово 1 / 30</span>
-    <span class="score" id="score-box">Баллы: 0</span>
+    <span class="counter" id="q-counter">Слово 1 / 62</span>
+    <span class="score" id="score-box">Верно: 0 / 62</span>
   </div>
 
   <span class="badge" id="mode-badge">РУССКИЙ ➔ АНГЛИЙСКИЙ</span>
@@ -145,36 +145,570 @@
 
 <script>
 const items = [
-  { ru: ["люк"], en: ["hatch"] },
-  { ru: ["грузовая стрела", "стрела"], en: ["derrick"] },
-  { ru: ["лебедка", "лебёдка"], en: ["winch"] },
-  { ru: ["форштевень"], en: ["stem"] },
-  { ru: ["бортовая цистерна", "бортовой танк"], en: ["wing tank"] },
-  { ru: ["второе дно", "двойное дно"], en: ["tanktop"] },
-  { ru: ["междудонная цистерна", "междудонный танк"], en: ["double bottom tank"] },
-  { ru: ["набор корпуса", "набор корпуса судна", "набор"], en: ["framing"] },
-  { ru: ["обшивка", "настил", "обшивка настил"], en: ["plating"] },
-  { ru: ["стойка", "мачта", "стойка мачта"], en: ["post"] },
-  { ru: ["кормовой", "самый задний"], en: ["rearmost"] },
-  { ru: ["левый борт"], en: ["port"] },
-  { ru: ["правый борт"], en: ["starboard"] },
-  { ru: ["переборка"], en: ["bulkhead"] },
-  { ru: ["отсек", "помещение"], en: ["compartment"] },
-  { ru: ["продольный", "с носа до кормы"], en: ["fore and aft"] },
-  { ru: ["прогулочная палуба"], en: ["promenade deck"] },
-  { ru: ["крен"], en: ["list", "heel"] },
-  { ru: ["дифферент"], en: ["trim"] },
-  { ru: ["решетка", "гребень", "решётка"], en: ["grid"] },
-  { ru: ["ют"], en: ["poop"] },
-  { ru: ["форпик"], en: ["forepeak"] },
-  { ru: ["ахтерпик"], en: ["afterpeak"] },
-  { ru: ["марки углубления"], en: ["draught marks"] },
-  { ru: ["давление среды", "давление текучей среды"], en: ["fluid pressure"] },
-  { ru: ["неправильная нагрузка"], en: ["faulty loading"] },
-  { ru: ["вдоль и поперек", "вдоль и поперёк"], en: ["across the ship and along"] },
-  { ru: ["водонепроницаемый"], en: ["watertight"] },
-  { ru: ["мостик", "надстройка", "средняя надстройка"], en: ["bridge"] },
-  { ru: ["наклонять", "иметь тенденцию"], en: ["incline", "to incline"] }
+  {
+    "en": [
+      "general"
+    ],
+    "ru": [
+      "общий"
+    ]
+  },
+  {
+    "en": [
+      "hull"
+    ],
+    "ru": [
+      "корпус"
+    ]
+  },
+  {
+    "en": [
+      "superstructure"
+    ],
+    "ru": [
+      "надстройка"
+    ]
+  },
+  {
+    "en": [
+      "foremost"
+    ],
+    "ru": [
+      "передний",
+      "носовой",
+      "передний носовой"
+    ]
+  },
+  {
+    "en": [
+      "rearmost"
+    ],
+    "ru": [
+      "кормовой",
+      "самый задний",
+      "кормовой самый задний"
+    ]
+  },
+  {
+    "en": [
+      "midships"
+    ],
+    "ru": [
+      "середина судна",
+      "мидель"
+    ]
+  },
+  {
+    "en": [
+      "bridge"
+    ],
+    "ru": [
+      "мостик",
+      "средняя надстройка",
+      "мостик средняя надстройка"
+    ]
+  },
+  {
+    "en": [
+      "poop"
+    ],
+    "ru": [
+      "ют"
+    ]
+  },
+  {
+    "en": [
+      "framing"
+    ],
+    "ru": [
+      "набор корпуса судна",
+      "набор корпуса",
+      "набор"
+    ]
+  },
+  {
+    "en": [
+      "plating"
+    ],
+    "ru": [
+      "обшивка",
+      "настил",
+      "обшивка настил"
+    ]
+  },
+  {
+    "en": [
+      "port"
+    ],
+    "ru": [
+      "порт",
+      "левый борт",
+      "порт левый борт"
+    ]
+  },
+  {
+    "en": [
+      "starboard"
+    ],
+    "ru": [
+      "правый борт"
+    ]
+  },
+  {
+    "en": [
+      "bottom"
+    ],
+    "ru": [
+      "днище",
+      "дно",
+      "днище дно"
+    ]
+  },
+  {
+    "en": [
+      "side"
+    ],
+    "ru": [
+      "борт",
+      "сторона",
+      "борт сторона"
+    ]
+  },
+  {
+    "en": [
+      "deck"
+    ],
+    "ru": [
+      "палуба"
+    ]
+  },
+  {
+    "en": [
+      "upper deck"
+    ],
+    "ru": [
+      "верхняя палуба"
+    ]
+  },
+  {
+    "en": [
+      "middle deck"
+    ],
+    "ru": [
+      "средняя палуба"
+    ]
+  },
+  {
+    "en": [
+      "lower deck"
+    ],
+    "ru": [
+      "нижняя палуба"
+    ]
+  },
+  {
+    "en": [
+      "bridge deck"
+    ],
+    "ru": [
+      "палуба мостика"
+    ]
+  },
+  {
+    "en": [
+      "boat deck"
+    ],
+    "ru": [
+      "шлюпочная палуба"
+    ]
+  },
+  {
+    "en": [
+      "promenade deck"
+    ],
+    "ru": [
+      "прогулочная палуба"
+    ]
+  },
+  {
+    "en": [
+      "fore"
+    ],
+    "ru": [
+      "перед",
+      "передний",
+      "впереди",
+      "перед передний впереди"
+    ]
+  },
+  {
+    "en": [
+      "forward"
+    ],
+    "ru": [
+      "в носовой части",
+      "вперед"
+    ]
+  },
+  {
+    "en": [
+      "aft",
+      "after",
+      "abaft"
+    ],
+    "ru": [
+      "задний",
+      "сзади",
+      "в кормовой части",
+      "кормовой"
+    ]
+  },
+  {
+    "en": [
+      "fore and aft"
+    ],
+    "ru": [
+      "продольной",
+      "продольный",
+      "с носа до кормы"
+    ]
+  },
+  {
+    "en": [
+      "amidships"
+    ],
+    "ru": [
+      "посредине судна",
+      "посередине судна",
+      "на миделе"
+    ]
+  },
+  {
+    "en": [
+      "main"
+    ],
+    "ru": [
+      "главный",
+      "основной",
+      "главный основной"
+    ]
+  },
+  {
+    "en": [
+      "waterline"
+    ],
+    "ru": [
+      "ватерлиния"
+    ]
+  },
+  {
+    "en": [
+      "watertight"
+    ],
+    "ru": [
+      "водонепроницаемый"
+    ]
+  },
+  {
+    "en": [
+      "engine room"
+    ],
+    "ru": [
+      "моторное отделение",
+      "машинное отделение"
+    ]
+  },
+  {
+    "en": [
+      "tank"
+    ],
+    "ru": [
+      "танк",
+      "резервуар",
+      "цистерна"
+    ]
+  },
+  {
+    "en": [
+      "dry cargo ship"
+    ],
+    "ru": [
+      "сухогруз"
+    ]
+  },
+  {
+    "en": [
+      "ship's underwater body",
+      "underwater body"
+    ],
+    "ru": [
+      "подводная часть корпуса",
+      "подводная часть"
+    ]
+  },
+  {
+    "en": [
+      "compartment"
+    ],
+    "ru": [
+      "отсек",
+      "помещение"
+    ]
+  },
+  {
+    "en": [
+      "bulkhead"
+    ],
+    "ru": [
+      "переборка"
+    ]
+  },
+  {
+    "en": [
+      "afterpeak"
+    ],
+    "ru": [
+      "ахтерпик",
+      "ахтпик"
+    ]
+  },
+  {
+    "en": [
+      "wing tank"
+    ],
+    "ru": [
+      "бортовая цистерна",
+      "бортовой танк"
+    ]
+  },
+  {
+    "en": [
+      "double bottom tank"
+    ],
+    "ru": [
+      "междудонная цистерна",
+      "междудонный танк"
+    ]
+  },
+  {
+    "en": [
+      "tanktop"
+    ],
+    "ru": [
+      "второе дно",
+      "палубное перекрытие над цистернами двойного дна",
+      "двойное дно"
+    ]
+  },
+  {
+    "en": [
+      "winch"
+    ],
+    "ru": [
+      "лебедка",
+      "лебёдка"
+    ]
+  },
+  {
+    "en": [
+      "derrick"
+    ],
+    "ru": [
+      "грузовая стрела",
+      "стрела"
+    ]
+  },
+  {
+    "en": [
+      "post"
+    ],
+    "ru": [
+      "стойка",
+      "мачта",
+      "стойка мачта"
+    ]
+  },
+  {
+    "en": [
+      "to incline",
+      "incline"
+    ],
+    "ru": [
+      "наклонять",
+      "иметь тенденцию",
+      "наклоняться"
+    ]
+  },
+  {
+    "en": [
+      "watch"
+    ],
+    "ru": [
+      "вахта",
+      "наблюдение",
+      "следить",
+      "наблюдать"
+    ]
+  },
+  {
+    "en": [
+      "trim"
+    ],
+    "ru": [
+      "дифферент"
+    ]
+  },
+  {
+    "en": [
+      "stem"
+    ],
+    "ru": [
+      "форштевень"
+    ]
+  },
+  {
+    "en": [
+      "heel"
+    ],
+    "ru": [
+      "крен",
+      "наклонять",
+      "наклоняться"
+    ]
+  },
+  {
+    "en": [
+      "grid"
+    ],
+    "ru": [
+      "решетка",
+      "гребень",
+      "решётка"
+    ]
+  },
+  {
+    "en": [
+      "fluid pressure"
+    ],
+    "ru": [
+      "давление текучей среды",
+      "давление среды"
+    ]
+  },
+  {
+    "en": [
+      "list"
+    ],
+    "ru": [
+      "крен"
+    ]
+  },
+  {
+    "en": [
+      "across the ship and along"
+    ],
+    "ru": [
+      "вдоль и поперек",
+      "вдоль и поперёк"
+    ]
+  },
+  {
+    "en": [
+      "permanent housing"
+    ],
+    "ru": [
+      "постоянные постройки",
+      "постоянные надстройки"
+    ]
+  },
+  {
+    "en": [
+      "to gain more space for cargo",
+      "gain more space for cargo"
+    ],
+    "ru": [
+      "чтобы выиграть больше места для груза",
+      "выиграть больше места для груза"
+    ]
+  },
+  {
+    "en": [
+      "draught marks"
+    ],
+    "ru": [
+      "марки углубления"
+    ]
+  },
+  {
+    "en": [
+      "faulty loading"
+    ],
+    "ru": [
+      "неправильная нагрузка",
+      "неправильная погрузка"
+    ]
+  },
+  {
+    "en": [
+      "forepeak"
+    ],
+    "ru": [
+      "форпик"
+    ]
+  },
+  {
+    "en": [
+      "hatch"
+    ],
+    "ru": [
+      "люк"
+    ]
+  },
+  {
+    "en": [
+      "hold"
+    ],
+    "ru": [
+      "трюм"
+    ]
+  },
+  {
+    "en": [
+      "liquid cargo ship"
+    ],
+    "ru": [
+      "танкер",
+      "наливное судно"
+    ]
+  },
+  {
+    "en": [
+      "access"
+    ],
+    "ru": [
+      "доступ"
+    ]
+  },
+  {
+    "en": [
+      "space"
+    ],
+    "ru": [
+      "пространство",
+      "отсек",
+      "помещение"
+    ]
+  },
+  {
+    "en": [
+      "opening"
+    ],
+    "ru": [
+      "отверстие",
+      "крышка",
+      "проем"
+    ]
+  }
 ];
 
 function shuffle(arr) {
@@ -182,12 +716,12 @@ function shuffle(arr) {
 }
 
 function cleanStr(s) {
-  return s.toLowerCase().trim().replace(/ё/g, "е").replace(/[^a-zа-я0-9\s]/gi, "");
+  return s.toLowerCase().trim().replace(/ё/g, "е").replace(/[^a-zа-я0-9\s']/gi, "").replace(/\s+/g, " ");
 }
 
 let cards = [];
 let currentIndex = 0;
-let score = 0;
+let correctCount = 0;
 
 function initCards() {
   const shuffledVocab = shuffle(items);
@@ -195,9 +729,9 @@ function initCards() {
     const isRuToEn = Math.random() < 0.5;
     return {
       isRuToEn,
-      promptWord: isRuToEn ? item.ru[0] : item.en[0],
+      promptWord: isRuToEn ? item.ru.join(" / ") : item.en.join(" / "),
       validAnswers: isRuToEn ? item.en : item.ru,
-      displayAnswer: isRuToEn ? item.en[0] : item.ru[0]
+      displayAnswer: isRuToEn ? item.en.join(" / ") : item.ru.join(" / ")
     };
   });
 }
@@ -205,7 +739,7 @@ function initCards() {
 function renderCard() {
   const c = cards[currentIndex];
   document.getElementById("q-counter").textContent = `Слово ${currentIndex + 1} / ${cards.length}`;
-  document.getElementById("score-box").textContent = `Баллы: ${score}`;
+  document.getElementById("score-box").textContent = `Верно: ${correctCount} / ${cards.length}`;
 
   const badge = document.getElementById("mode-badge");
   if (c.isRuToEn) {
@@ -246,7 +780,7 @@ function checkAnswer() {
   const fb = document.getElementById("feedback");
 
   if (isMatch) {
-    score += 10;
+    correctCount++;
     inp.style.borderColor = "#4ade80";
     fb.className = "feedback-box fb-good";
     fb.textContent = "Верно!";
@@ -256,7 +790,7 @@ function checkAnswer() {
     fb.textContent = `Неверно. Правильно: «${c.displayAnswer}»`;
   }
 
-  document.getElementById("score-box").textContent = `Баллы: ${score}`;
+  document.getElementById("score-box").textContent = `Верно: ${correctCount} / ${cards.length}`;
   document.getElementById("next-btn").style.display = "block";
   document.getElementById("next-btn").focus();
 }
@@ -267,9 +801,9 @@ function nextCard() {
     renderCard();
   } else {
     document.getElementById("trainer-card").innerHTML = `
-      <h2 style="color: #38bdf8; font-size: 24px; margin-bottom: 12px;">Тренировка окончена!</h2>
-      <p style="font-size: 18px; margin-bottom: 16px;">Набрано: <b>${score}</b> из <b>${cards.length * 10}</b> баллов</p>
-      <button class="next-action-btn" style="display:block;" onclick="location.reload()">Пройти ещё раз (вопросы перемешаются)</button>
+      <h2 style="color: #38bdf8; font-size: 24px; margin-bottom: 12px;">Все 62 слова пройдены!</h2>
+      <p style="font-size: 18px; margin-bottom: 16px;">Правильных ответов: <b>${correctCount}</b> из <b>${cards.length}</b></p>
+      <button class="next-action-btn" style="display:block;" onclick="location.reload()">Пройти заново (перемешать)</button>
     `;
   }
 }

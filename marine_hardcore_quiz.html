@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Морской тренажёр: Pro</title>
+<title>Морской тренажёр PRO: Все 62 слова (Хардкор)</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -23,25 +23,19 @@
     max-width: 540px;
     width: 100%;
     padding: 24px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75);
   }
   .top-stats {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
     font-size: 14px;
-    font-weight: 600;
-  }
-  .lives { color: #f87171; letter-spacing: 2px; }
-  .score { color: #38bdf8; }
-  .stage-tag {
-    color: #94a3b8;
-    font-size: 12px;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
   }
+  .counter { color: #94a3b8; }
+  .lives { color: #f87171; letter-spacing: 2px; font-size: 16px; }
+  .score { color: #38bdf8; }
   .badge {
     display: inline-block;
     padding: 4px 10px;
@@ -52,42 +46,57 @@
     letter-spacing: 0.05em;
     margin-bottom: 12px;
   }
-  .badge-type { background: #0284c7; color: white; }
-  .badge-anagram { background: #8b5cf6; color: white; }
-  .badge-tf { background: #f59e0b; color: black; }
-  .badge-choice { background: #10b981; color: white; }
-  .badge-hard { background: #e11d48; color: white; }
+  .b-context { background: #7c3aed; color: #ffffff; }
+  .b-type { background: #ea580c; color: #ffffff; }
+  .b-choice { background: #0284c7; color: #ffffff; }
 
-  .task-prompt {
+  .target-word {
+    font-size: 21px;
+    font-weight: 800;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: #ffffff;
+  }
+  .hint-sub {
     font-size: 13px;
     color: #94a3b8;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    font-weight: 700;
-  }
-  .task-question {
-    font-size: 20px;
-    font-weight: 700;
-    line-height: 1.4;
-    margin-bottom: 20px;
-    color: #ffffff;
-    min-height: 58px;
-    display: flex;
-    align-items: center;
-  }
-  .context-subtext {
-    font-size: 14px;
-    color: #94a3b8;
-    margin-top: -12px;
     margin-bottom: 18px;
-    line-height: 1.4;
   }
-
-  /* Режим ввода */
-  .input-group {
+  .options-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+  }
+  .opt-btn {
+    background: #0d1524;
+    border: 2px solid #2d3b55;
+    border-radius: 10px;
+    padding: 13px 16px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f8fafc;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .opt-btn:hover:not(:disabled) {
+    border-color: #38bdf8;
+    background: #162238;
+  }
+  .opt-btn.correct {
+    background: #064e3b;
+    border-color: #4ade80;
+    color: #ffffff;
+  }
+  .opt-btn.wrong {
+    background: #450a0a;
+    border-color: #f87171;
+    color: #fca5a5;
+  }
+  .input-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
   }
   input[type="text"] {
     background: #0d1524;
@@ -97,67 +106,27 @@
     font-size: 16px;
     color: #ffffff;
     outline: none;
-    transition: border-color 0.2s;
   }
-  input[type="text"]:focus {
-    border-color: #38bdf8;
-  }
+  input[type="text"]:focus { border-color: #38bdf8; }
   .submit-btn {
-    background: #0284c7;
+    background: #ea580c;
     border: none;
     color: white;
-    padding: 14px;
+    padding: 13px;
     border-radius: 10px;
     font-size: 15px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
   }
-  .submit-btn:hover { background: #0369a1; }
-
-  /* Режим кнопок */
-  .options-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  button.opt-btn {
-    background: #1b263b;
-    border: 2px solid #2d3b55;
-    color: #f8fafc;
-    padding: 13px 16px;
-    border-radius: 10px;
-    font-size: 15px;
-    text-align: left;
-    font-weight: 600;
-    cursor: pointer;
-    line-height: 1.35;
-    transition: all 0.15s;
-  }
-  button.opt-btn:hover:not(:disabled) {
-    background: #243350;
-    border-color: #38bdf8;
-  }
-  .tf-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  /* Подсветка */
-  .correct { background: #15803d !important; border-color: #4ade80 !important; color: white !important; }
-  .wrong { background: #b91c1c !important; border-color: #f87171 !important; color: white !important; }
-
-  .feedback-box {
-    margin-top: 14px;
+  .feedback {
+    margin-top: 12px;
     font-size: 14px;
-    font-weight: 600;
-    min-height: 22px;
-    line-height: 1.4;
+    font-weight: 700;
+    min-height: 20px;
   }
-  .fb-good { color: #4ade80; }
-  .fb-bad { color: #f87171; }
-
-  .next-action-btn {
+  .fb-ok { color: #4ade80; }
+  .fb-err { color: #f87171; }
+  .next-btn {
     margin-top: 16px;
     width: 100%;
     background: #38bdf8;
@@ -170,478 +139,918 @@
     cursor: pointer;
     display: none;
   }
-  .next-action-btn:hover { background: #7dd3fc; }
 </style>
 </head>
 <body>
 
-<div class="card" id="game-card">
+<div class="card" id="pro-card">
   <div class="top-stats">
-    <div>
-      <span class="stage-tag" id="stage-indicator">ЭТАП 1</span> • 
-      <span id="q-counter">Задание 1 / 20</span>
-    </div>
+    <span class="counter" id="q-counter">1 / 62</span>
     <span class="lives" id="lives-box">❤️❤️❤️</span>
     <span class="score" id="score-box">Очки: 0</span>
   </div>
+  <span class="badge" id="mode-badge">КОНТЕКСТ</span>
+  <div class="target-word" id="target-word"></div>
+  <div class="hint-sub" id="hint-sub"></div>
 
-  <span class="badge" id="mode-badge">РЕЖИМ</span>
-  <div class="task-prompt" id="task-prompt">ЗАДАНИЕ</div>
-  <div class="task-question" id="task-question">Загрузка...</div>
-  <div class="context-subtext" id="context-subtext"></div>
-
-  <div id="interactive-area"></div>
-  <div class="feedback-box" id="feedback"></div>
-  <button class="next-action-btn" id="next-btn" onclick="nextStep()">Дальше ➔</button>
+  <div id="interaction-area"></div>
+  <div class="feedback" id="feedback"></div>
+  <button class="next-btn" id="next-btn" onclick="nextStep()">Дальше ➔</button>
 </div>
 
 <script>
-const dict = [
-  { ru: "люк", en: "hatch" },
-  { ru: "грузовая стрела", en: "derrick" },
-  { ru: "лебедка", en: "winch" },
-  { ru: "форштевень", en: "stem" },
-  { ru: "бортовая цистерна", en: "wing tank" },
-  { ru: "второе дно", en: "tanktop" },
-  { ru: "набор корпуса судна", en: "framing" },
-  { ru: "обшивка, настил", en: "plating" },
-  { ru: "стойка, мачта", en: "post" },
-  { ru: "левый борт", en: "port" },
-  { ru: "правый борт", en: "starboard" },
-  { ru: "переборка", en: "bulkhead" },
-  { ru: "продольный, с носа до кормы", en: "fore and aft" },
-  { ru: "прогулочная палуба", en: "promenade deck" },
-  { ru: "дифферент", en: "trim" },
-  { ru: "крен", en: "list" },
-  { ru: "ют", en: "poop" },
-  { ru: "форпик", en: "forepeak" },
-  { ru: "ахтерпик", en: "afterpeak" },
-  { ru: "отсек", en: "compartment" },
-  { ru: "марки углубления", en: "draught marks" },
-  { ru: "водонепроницаемый", en: "watertight" },
-  { ru: "мостик, надстройка", en: "bridge" },
-  { ru: "вдоль и поперек", en: "across the ship and along" },
-  { ru: "давление среды", en: "fluid pressure" }
-];
-
-// 8 контекстных сложных предложений для Этапа 2
-const hardSentences = [
+const items = [
   {
-    sentence: "Due to faulty loading of heavy containers on the starboard side, the vessel developed a permanent list.",
-    subtext: "Определи смысл выделенного процесса / последствия:",
-    question: "Что произошло с судном из-за неправильной погрузки?",
-    ans: "Судно получило постоянный крен на правый борт",
-    options: [
-      "Судно получило постоянный крен на правый борт",
-      "Судно получило дифферент на нос",
-      "Была повреждена обшивка левого борта",
-      "Затопило ахтерпик и машинное отделение"
-    ]
+    "en": [
+      "general"
+    ],
+    "ru": [
+      "общий"
+    ],
+    "sent_en": "Here is the ___ description of the vessel.",
+    "sent_ru": "(Общее описание судна)"
   },
   {
-    sentence: "The crew closed and secured the cargo hatch to ensure the hold remains completely watertight during rough sea.",
-    subtext: "Каково назначение выполненного действия?",
-    question: "Зачем команда задраила грузовой люк (cargo hatch)?",
-    ans: "Чтобы обеспечить полную водонепроницаемость трюма в шторм",
-    options: [
-      "Чтобы обеспечить полную водонепроницаемость трюма в шторм",
-      "Чтобы запустить грузовую стрелу и лебёдки",
-      "Чтобы выровнять давление текучей среды во втором дне",
-      "Для вентиляции жилых помещений и надстройки"
-    ]
+    "en": [
+      "hull"
+    ],
+    "ru": [
+      "корпус"
+    ],
+    "sent_en": "The main body of a ship is called a ___.",
+    "sent_ru": "(Основная часть судна — корпус)"
   },
   {
-    sentence: "Water began filling the forepeak compartment immediately after the stem struck an underwater obstacle.",
-    subtext: "Разбери повреждение по деталям конструкции:",
-    question: "Какая часть корпуса пострадала и какой отсек затопило?",
-    ans: "Форштевень (нос) получил удар, затопило носовой отсек (форпик)",
-    options: [
-      "Форштевень (нос) получил удар, затопило носовой отсек (форпик)",
-      "Корма получила удар, затопило ахтерпик",
-      "Пробило настил второго дна под машинным отделением",
-      "Треснула поперечная переборка возле правого борта"
-    ]
+    "en": [
+      "superstructure"
+    ],
+    "ru": [
+      "надстройка"
+    ],
+    "sent_en": "All permanent housing above the main deck is known as ___.",
+    "sent_ru": "(Все постройки над главной палубой — надстройка)"
   },
   {
-    sentence: "To reduce trim by the stern, the duty officer ordered ballast to be pumped into the forepeak tank.",
-    subtext: "Определи навигационную ситуацию:",
-    question: "Какую проблему устраняет вахтенный помощник?",
-    ans: "Дифферент на корму (путем закачки балласта в носовой танк)",
-    options: [
-      "Дифферент на корму (путем закачки балласта в носовой танк)",
-      "Опасный крен на левый борт",
-      "Повышенное давление в бортовых цистернах",
-      "Увеличение общей осадки судна выше грузовой марки"
-    ]
+    "en": [
+      "foremost"
+    ],
+    "ru": [
+      "передний",
+      "носовой",
+      "передний носовой"
+    ],
+    "sent_en": "The ___ part of the hull is called the bow.",
+    "sent_ru": "(Самая передняя/носовая часть корпуса — нос)"
   },
   {
-    sentence: "The derrick and winch systems are mounted on the deck for self-sustained loading and discharging operations.",
-    subtext: "Определи назначение оборудования:",
-    question: "О каком оборудовании и операциях идёт речь в предложении?",
-    ans: "Грузовые стрелы и лебёдки для самостоятельной погрузки и выгрузки",
-    options: [
-      "Грузовые стрелы и лебёдки для самостоятельной погрузки и выгрузки",
-      "Швартовные механизмы на баке и юте для стоянки у причала",
-      "Спасательные шлюпки и кран-балки на шлюпочной палубе",
-      "Система насосов для откачки воды из междудонных цистерн"
-    ]
+    "en": [
+      "rearmost"
+    ],
+    "ru": [
+      "кормовой",
+      "самый задний",
+      "кормовой самый задний"
+    ],
+    "sent_en": "The ___ part of the hull is called the stern.",
+    "sent_ru": "(Самая задняя/кормовая часть корпуса — корма)"
   },
   {
-    sentence: "The transverse bulkheads divide the vessel's hull into several separate watertight compartments.",
-    subtext: "Конструктивная особенность судна:",
-    question: "Какую функцию выполняют поперечные переборки (transverse bulkheads)?",
-    ans: "Делят корпус на несколько отдельных водонепроницаемых отсеков",
-    options: [
-      "Делят корпус на несколько отдельных водонепроницаемых отсеков",
-      "Усиливают продольный набор корпуса от носа до кормы",
-      "Служат настилом для второго дна и цистерн",
-      "Защищают прогулочную палубу от набегающих волн"
-    ]
+    "en": [
+      "midships"
+    ],
+    "ru": [
+      "середина судна",
+      "мидель"
+    ],
+    "sent_en": "The part between the bow and the stern is called ___.",
+    "sent_ru": "(Часть между носом и кормой — середина судна / мидель)"
   },
   {
-    sentence: "During inspection, the surveyor examined the draught marks at both the stem and the stern.",
-    subtext: "Контроль параметров судна:",
-    question: "Что именно проверял инспектор на носу и на корме?",
-    ans: "Марки углубления (осадки) судна",
-    options: [
-      "Марки углубления (осадки) судна",
-      "Состояние обшивки и набора корпуса",
-      "Прочность шлюпочных лебёдок",
-      "Герметичность крышек трюмов"
-    ]
+    "en": [
+      "bridge"
+    ],
+    "ru": [
+      "мостик",
+      "средняя надстройка",
+      "мостик средняя надстройка"
+    ],
+    "sent_en": "The captain controls the vessel from the navigation ___.",
+    "sent_ru": "(Капитан управляет судном с ходового мостика)"
   },
   {
-    sentence: "Fuel oil is stored in the double bottom tanks, directly underneath the cargo tanktop plating.",
-    subtext: "Расположение судовых конструкций:",
-    question: "Где именно хранится топливо согласно предложению?",
-    ans: "В междудонных цистернах, прямо под настилом второго дна",
-    options: [
-      "В междудонных цистернах, прямо под настилом второго дна",
-      "В бортовых танках выше ватерлинии",
-      "В форпике за носовой переборкой",
-      "В расходных цистернах машинного отделения"
-    ]
+    "en": [
+      "poop"
+    ],
+    "ru": [
+      "ют"
+    ],
+    "sent_en": "The after raised part of the deck is called the ___.",
+    "sent_ru": "(Кормовая приподнятая часть палубы — ют)"
+  },
+  {
+    "en": [
+      "framing"
+    ],
+    "ru": [
+      "набор корпуса судна",
+      "набор корпуса",
+      "набор"
+    ],
+    "sent_en": "The hull is made up of ___ covered with plating.",
+    "sent_ru": "(Корпус состоит из набора, покрытого обшивкой)"
+  },
+  {
+    "en": [
+      "plating"
+    ],
+    "ru": [
+      "обшивка",
+      "настил",
+      "обшивка настил"
+    ],
+    "sent_en": "Frames of the ship's hull are covered with steel ___.",
+    "sent_ru": "(Шпангоуты корпуса покрыты стальной обшивкой)"
+  },
+  {
+    "en": [
+      "port"
+    ],
+    "ru": [
+      "порт",
+      "левый борт",
+      "порт левый борт"
+    ],
+    "sent_en": "The left side of the ship when facing forward is ___.",
+    "sent_ru": "(Левая сторона судна при взгляде на нос — левый борт)"
+  },
+  {
+    "en": [
+      "starboard"
+    ],
+    "ru": [
+      "правый борт"
+    ],
+    "sent_en": "The right side of the vessel is called ___.",
+    "sent_ru": "(Правая сторона судна — правый борт)"
+  },
+  {
+    "en": [
+      "bottom"
+    ],
+    "ru": [
+      "днище",
+      "дно",
+      "днище дно"
+    ],
+    "sent_en": "The hull is the area between the main deck, the sides and the ___.",
+    "sent_ru": "(Зона между главной палубой, бортами и днищем)"
+  },
+  {
+    "en": [
+      "side"
+    ],
+    "ru": [
+      "борт",
+      "сторона",
+      "борт сторона"
+    ],
+    "sent_en": "If a ship has double ___s, the space between them contains wing tanks.",
+    "sent_ru": "(Если у судна двойные борта, там расположены бортовые танки)"
+  },
+  {
+    "en": [
+      "deck"
+    ],
+    "ru": [
+      "палуба"
+    ],
+    "sent_en": "Cargo handling cranes are mounted on the main ___.",
+    "sent_ru": "(Грузовые краны установлены на главной палубе)"
+  },
+  {
+    "en": [
+      "upper deck"
+    ],
+    "ru": [
+      "верхняя палуба"
+    ],
+    "sent_en": "Waves were breaking over the ___ during the storm.",
+    "sent_ru": "(Волны перекатывались через верхнюю палубу)"
+  },
+  {
+    "en": [
+      "middle deck"
+    ],
+    "ru": [
+      "средняя палуба"
+    ],
+    "sent_en": "Cabins for the crew are located on the ___.",
+    "sent_ru": "(Каюты экипажа расположены на средней палубе)"
+  },
+  {
+    "en": [
+      "lower deck"
+    ],
+    "ru": [
+      "нижняя палуба"
+    ],
+    "sent_en": "Heavy machinery is stored below on the ___.",
+    "sent_ru": "(Тяжелое оборудование хранится на нижней палубе)"
+  },
+  {
+    "en": [
+      "bridge deck"
+    ],
+    "ru": [
+      "палуба мостика"
+    ],
+    "sent_en": "Navigation equipment is installed on the ___.",
+    "sent_ru": "(Навигационные приборы установлены на палубе мостика)"
+  },
+  {
+    "en": [
+      "boat deck"
+    ],
+    "ru": [
+      "шлюпочная палуба"
+    ],
+    "sent_en": "Lifeboats are stationed along the ___.",
+    "sent_ru": "(Спасательные шлюпки размещены на шлюпочной палубе)"
+  },
+  {
+    "en": [
+      "promenade deck"
+    ],
+    "ru": [
+      "прогулочная палуба"
+    ],
+    "sent_en": "Passengers can walk and relax on the ___.",
+    "sent_ru": "(Пассажиры могут гулять на прогулочной палубе)"
+  },
+  {
+    "en": [
+      "fore"
+    ],
+    "ru": [
+      "перед",
+      "передний",
+      "впереди",
+      "перед передний впереди"
+    ],
+    "sent_en": "At the ___ end of the hull are the forepeak tanks.",
+    "sent_ru": "(В передней/носовой оконечности корпуса находятся форпиковые танки)"
+  },
+  {
+    "en": [
+      "forward"
+    ],
+    "ru": [
+      "в носовой части",
+      "вперед"
+    ],
+    "sent_en": "The ___ raised part of the deck is called the forecastle.",
+    "sent_ru": "(Приподнятая часть палубы в носовой части — бак)"
+  },
+  {
+    "en": [
+      "aft",
+      "after",
+      "abaft"
+    ],
+    "ru": [
+      "задний",
+      "сзади",
+      "в кормовой части",
+      "кормовой"
+    ],
+    "sent_en": "At the ___ end of the hull are the afterpeak tanks.",
+    "sent_ru": "(В задней/кормовой оконечности находятся ахтерпиковые танки)"
+  },
+  {
+    "en": [
+      "fore and aft"
+    ],
+    "ru": [
+      "продольной",
+      "продольный",
+      "с носа до кормы"
+    ],
+    "sent_en": "The angle that a ship is making ___ with the water is known as trim.",
+    "sent_ru": "(Продольный угол наклона судна с носа до кормы — дифферент)"
+  },
+  {
+    "en": [
+      "amidships"
+    ],
+    "ru": [
+      "посредине судна",
+      "посередине судна",
+      "на миделе"
+    ],
+    "sent_en": "The heaviest cargo is usually stowed ___.",
+    "sent_ru": "(Самый тяжелый груз обычно укладывают посредине судна)"
+  },
+  {
+    "en": [
+      "main"
+    ],
+    "ru": [
+      "главный",
+      "основной",
+      "главный основной"
+    ],
+    "sent_en": "The hull is the ___ part of the ship.",
+    "sent_ru": "(Корпус — главная/основная часть судна)"
+  },
+  {
+    "en": [
+      "waterline"
+    ],
+    "ru": [
+      "ватерлиния"
+    ],
+    "sent_en": "Freeboard is the distance between the ___ and the main deck.",
+    "sent_ru": "(Надводный борт — расстояние между ватерлинией и главной палубой)"
+  },
+  {
+    "en": [
+      "watertight"
+    ],
+    "ru": [
+      "водонепроницаемый"
+    ],
+    "sent_en": "The hull is divided up into a number of ___ compartments.",
+    "sent_ru": "(Корпус разделен на ряд водонепроницаемых отсеков)"
+  },
+  {
+    "en": [
+      "engine room"
+    ],
+    "ru": [
+      "моторное отделение",
+      "машинное отделение"
+    ],
+    "sent_en": "The hull contains the ___, cargo spaces and a number of tanks.",
+    "sent_ru": "(В корпусе находятся моторное отделение, грузовые помещения и танки)"
+  },
+  {
+    "en": [
+      "tank"
+    ],
+    "ru": [
+      "танк",
+      "резервуар",
+      "цистерна"
+    ],
+    "sent_en": "In liquid cargo vessels the cargo space is divided into ___s.",
+    "sent_ru": "(На наливных судах грузовое пространство делится на танки/цистерны)"
+  },
+  {
+    "en": [
+      "dry cargo ship"
+    ],
+    "ru": [
+      "сухогруз"
+    ],
+    "sent_en": "In ___s the cargo space is divided into holds.",
+    "sent_ru": "(На сухогрузах грузовое пространство разделено на трюмы)"
+  },
+  {
+    "en": [
+      "ship's underwater body",
+      "underwater body"
+    ],
+    "ru": [
+      "подводная часть корпуса",
+      "подводная часть"
+    ],
+    "sent_en": "The part of the hull below water is the ___.",
+    "sent_ru": "(Часть корпуса ниже воды — подводная часть корпуса)"
+  },
+  {
+    "en": [
+      "compartment"
+    ],
+    "ru": [
+      "отсек",
+      "помещение"
+    ],
+    "sent_en": "Bulkheads divide the interior into watertight ___s.",
+    "sent_ru": "(Переборки делят внутреннее пространство на водонепроницаемые отсеки)"
+  },
+  {
+    "en": [
+      "bulkhead"
+    ],
+    "ru": [
+      "переборка"
+    ],
+    "sent_en": "___s are vertical steel walls going across the ship and along.",
+    "sent_ru": "(Переборки — это вертикальные стальные стенки)"
+  },
+  {
+    "en": [
+      "afterpeak"
+    ],
+    "ru": [
+      "ахтерпик",
+      "ахтпик"
+    ],
+    "sent_en": "At the after end of the hull are the ___ tanks.",
+    "sent_ru": "(В кормовой оконечности корпуса расположены танки ахтерпика)"
+  },
+  {
+    "en": [
+      "wing tank"
+    ],
+    "ru": [
+      "бортовая цистерна",
+      "бортовой танк"
+    ],
+    "sent_en": "If a ship has double sides, the space between them contains ___s.",
+    "sent_ru": "(Пространство между двойными бортами содержит бортовые цистерны)"
+  },
+  {
+    "en": [
+      "double bottom tank"
+    ],
+    "ru": [
+      "междудонная цистерна",
+      "междудонный танк"
+    ],
+    "sent_en": "The space between the tank top and the bottom contains ___s.",
+    "sent_ru": "(Пространство под вторым дном содержит междудонные цистерны)"
+  },
+  {
+    "en": [
+      "tanktop",
+      "tank top"
+    ],
+    "ru": [
+      "второе дно",
+      "палубное перекрытие над цистернами двойного дна",
+      "двойное дно"
+    ],
+    "sent_en": "The space between the ___ and the bottom contains double bottom tanks.",
+    "sent_ru": "(Пространство между вторым дном и днищем)"
+  },
+  {
+    "en": [
+      "winch"
+    ],
+    "ru": [
+      "лебедка",
+      "лебёдка"
+    ],
+    "sent_en": "On deck there are cargo handling facilities, such as cranes and ___es.",
+    "sent_ru": "(На палубе установлены краны и лебедки)"
+  },
+  {
+    "en": [
+      "derrick"
+    ],
+    "ru": [
+      "грузовая стрела",
+      "стрела"
+    ],
+    "sent_en": "Ships having ___s also have cargo masts and cargo posts.",
+    "sent_ru": "(Суда с грузовыми стрелами также имеют грузовые мачты и колонки)"
+  },
+  {
+    "en": [
+      "post"
+    ],
+    "ru": [
+      "стойка",
+      "мачта",
+      "стойка мачта"
+    ],
+    "sent_en": "Derricks are supported by cargo masts and Samson ___s on deck.",
+    "sent_ru": "(Грузовые стрелы крепятся к мачтам и стойкам/колонкам на палубе)"
+  },
+  {
+    "en": [
+      "to incline",
+      "incline"
+    ],
+    "ru": [
+      "наклонять",
+      "иметь тенденцию",
+      "наклоняться"
+    ],
+    "sent_en": "Supported by fluid pressure, the ship will ___ in any direction during loading.",
+    "sent_ru": "(Под давлением воды судно будет наклоняться в любом направлении)"
+  },
+  {
+    "en": [
+      "watch"
+    ],
+    "ru": [
+      "вахта",
+      "наблюдение",
+      "следить",
+      "наблюдать"
+    ],
+    "sent_en": "Therefore the ship's position below water must be closely ___ed.",
+    "sent_ru": "(За положением подводной части судна нужно внимательно следить/наблюдать)"
+  },
+  {
+    "en": [
+      "trim"
+    ],
+    "ru": [
+      "дифферент"
+    ],
+    "sent_en": "The angle that a ship is making fore and aft with the water is known as ___.",
+    "sent_ru": "(Продольный наклон судна на нос или корму называется дифферентом)"
+  },
+  {
+    "en": [
+      "stem"
+    ],
+    "ru": [
+      "форштевень"
+    ],
+    "sent_en": "Water levels are read by numbers painted on the ship's ___.",
+    "sent_ru": "(Уровень воды считывают по цифрам на форштевне судна)"
+  },
+  {
+    "en": [
+      "heel"
+    ],
+    "ru": [
+      "крен",
+      "наклонять",
+      "наклоняться"
+    ],
+    "sent_en": "Inclination from one side to another caused by faulty loading is known as ___.",
+    "sent_ru": "(Наклон с борта на борт от неправильной погрузки — крен)"
+  },
+  {
+    "en": [
+      "grid"
+    ],
+    "ru": [
+      "решетка",
+      "гребень",
+      "решётка"
+    ],
+    "sent_en": "A protective steel ___ covers the intake opening.",
+    "sent_ru": "(Защитная стальная решетка закрывает впускное отверстие)"
+  },
+  {
+    "en": [
+      "fluid pressure"
+    ],
+    "ru": [
+      "давление текучей среды",
+      "давление среды"
+    ],
+    "sent_en": "Since a ship is supported by ___, she will incline during loading.",
+    "sent_ru": "(Так как судно поддерживается давлением текучей среды...)"
+  },
+  {
+    "en": [
+      "list"
+    ],
+    "ru": [
+      "крен"
+    ],
+    "sent_en": "A ___ or inclination from one side to another is caused by faulty loading.",
+    "sent_ru": "(Крен или наклон с борта на борт вызван неправильной погрузкой)"
+  },
+  {
+    "en": [
+      "across the ship and along"
+    ],
+    "ru": [
+      "вдоль и поперек",
+      "вдоль и поперёк"
+    ],
+    "sent_en": "Bulkheads are vertical steel walls going ___.",
+    "sent_ru": "(Переборки — стальные стенки, идущие вдоль и поперек судна)"
+  },
+  {
+    "en": [
+      "permanent housing"
+    ],
+    "ru": [
+      "постоянные постройки",
+      "постоянные надстройки"
+    ],
+    "sent_en": "All ___ above the main deck is known as superstructure.",
+    "sent_ru": "(Все постоянные постройки над главной палубой — это надстройка)"
+  },
+  {
+    "en": [
+      "to gain more space for cargo",
+      "gain more space for cargo"
+    ],
+    "ru": [
+      "чтобы выиграть больше места для груза",
+      "выиграть больше места для груза"
+    ],
+    "sent_en": "Vessels are built with the after engine room ___.",
+    "sent_ru": "(Суда строят с кормовым МО, чтобы выиграть больше места для груза)"
+  },
+  {
+    "en": [
+      "draught marks"
+    ],
+    "ru": [
+      "марки углубления"
+    ],
+    "sent_en": "Numbers painted on the ship's stem are called ___.",
+    "sent_ru": "(Цифры на форштевне называются марками углубления)"
+  },
+  {
+    "en": [
+      "faulty loading"
+    ],
+    "ru": [
+      "неправильная нагрузка",
+      "неправильная погрузка"
+    ],
+    "sent_en": "Inclination from one side to another is caused by ___.",
+    "sent_ru": "(Наклон с борта на борт вызывается неправильной нагрузкой)"
+  },
+  {
+    "en": [
+      "forepeak"
+    ],
+    "ru": [
+      "форпик"
+    ],
+    "sent_en": "At the fore end of the hull are the ___ tanks.",
+    "sent_ru": "(В носовой оконечности корпуса находятся танки форпика)"
+  },
+  {
+    "en": [
+      "hatch"
+    ],
+    "ru": [
+      "люк"
+    ],
+    "sent_en": "Openings giving access to cargo holds are called ___es.",
+    "sent_ru": "(Отверстия для доступа в трюмы называются люками)"
+  },
+  {
+    "en": [
+      "hold"
+    ],
+    "ru": [
+      "трюм"
+    ],
+    "sent_en": "In dry cargo ships the cargo space is divided into ___s.",
+    "sent_ru": "(На сухогрузах грузовое пространство делится на трюмы)"
+  },
+  {
+    "en": [
+      "liquid cargo ship"
+    ],
+    "ru": [
+      "танкер",
+      "наливное судно"
+    ],
+    "sent_en": "An oil tanker is the most common type of a ___.",
+    "sent_ru": "(Нефтяной танкер — самый распространенный тип наливного судна)"
+  },
+  {
+    "en": [
+      "access"
+    ],
+    "ru": [
+      "доступ"
+    ],
+    "sent_en": "Openings giving ___ to holds are called hatches.",
+    "sent_ru": "(Проемы, дающие доступ в трюмы, называются люками)"
+  },
+  {
+    "en": [
+      "space"
+    ],
+    "ru": [
+      "пространство",
+      "отсек",
+      "помещение"
+    ],
+    "sent_en": "The hull contains the engine room and cargo ___s.",
+    "sent_ru": "(Корпус вмещает машинное отделение и грузовые помещения)"
+  },
+  {
+    "en": [
+      "opening"
+    ],
+    "ru": [
+      "отверстие",
+      "крышка",
+      "проем"
+    ],
+    "sent_en": "___s giving access to holds are called hatches.",
+    "sent_ru": "(Отверстия/проемы, ведущие в трюмы, называются люками)"
   }
 ];
 
 function shuffle(arr) {
-  return arr.slice().sort(() => Math.random() - 0.5);
+  const copy = arr.slice();
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
 }
 
-let stage = 1; // 1 = базовые термины, 2 = сложные предложения
-let stage1Tasks = [];
-let stage2Tasks = [];
-let currentIdx = 0;
+function cleanStr(s) {
+  return s.toLowerCase().trim().replace(/ё/g, "е").replace(/[^a-zа-я0-9\s']/gi, "").replace(/\s+/g, " ");
+}
+
+let deck = [];
+let idx = 0;
 let lives = 3;
 let score = 0;
 
-function initStage1() {
-  const types = ["type_input", "anagram", "true_false", "choice"];
-  const shuffledDict = shuffle(dict).slice(0, 20);
+function initGame() {
+  const pool = shuffle(items);
+  deck = pool.map(item => {
+    // 3 random modes: 0 = Context Sentence, 1 = Typing, 2 = Quick Choice
+    const modeRoll = Math.random();
+    let mode = "CONTEXT";
+    if (modeRoll < 0.4) mode = "CONTEXT";
+    else if (modeRoll < 0.7) mode = "TYPE";
+    else mode = "CHOICE";
 
-  stage1Tasks = shuffledDict.map((item, idx) => {
-    const tType = types[idx % types.length];
+    const rightEn = item.en[0];
+    const distEn = shuffle(items.filter(x => x !== item)).slice(0, 3).map(x => x.en[0]);
 
-    if (tType === "type_input") {
-      return {
-        type: "input",
-        badge: "badge-type",
-        badgeText: "✍️ Ввод термина",
-        prompt: "Введи точный морской термин на английском:",
-        question: item.ru,
-        answer: item.en.toLowerCase().trim()
-      };
-    } else if (tType === "anagram") {
-      const baseWord = item.en.includes(" ") ? "derrick" : item.en;
-      const baseRu = item.en.includes(" ") ? "грузовая стрела" : item.ru;
-      const letters = shuffle(baseWord.split("")).join(" ");
-      return {
-        type: "anagram",
-        badge: "badge-anagram",
-        badgeText: "🧩 Сборка слова",
-        prompt: `Собери термин для: «${baseRu}»`,
-        question: letters.toUpperCase(),
-        answer: baseWord.toLowerCase().trim()
-      };
-    } else if (tType === "true_false") {
-      const isTruth = Math.random() > 0.5;
-      let presentedRu = item.ru;
-      if (!isTruth) {
-        const other = dict.find(d => d.en !== item.en);
-        presentedRu = other.ru;
-      }
-      return {
-        type: "true_false",
-        badge: "badge-tf",
-        badgeText: "⚖️ Проверка термина",
-        prompt: "Верно ли сопоставление?",
-        question: `«${item.en}» — это «${presentedRu}»?`,
-        answer: isTruth ? "ПРАВДА" : "ЛОЖЬ",
-        realRu: item.ru
-      };
-    } else {
-      const isEnToRu = Math.random() < 0.5;
-      const qText = isEnToRu ? item.en : item.ru;
-      const ans = isEnToRu ? item.ru : item.en;
-      const pool = dict.filter(d => (isEnToRu ? d.ru : d.en) !== ans).map(d => isEnToRu ? d.ru : d.en);
-      const wrong = shuffle(pool).slice(0, 3);
-      const opts = shuffle([ans, ...wrong]);
-
-      return {
-        type: "choice",
-        badge: "badge-choice",
-        badgeText: isEnToRu ? "🇬🇧 ➔ 🇷🇺 Выбор перевода" : "🇷🇺 ➔ 🇬🇧 Выбор перевода",
-        prompt: "Выбери корректный вариант:",
-        question: qText,
-        options: opts,
-        answer: ans
-      };
-    }
-  });
-}
-
-function initStage2() {
-  stage2Tasks = shuffle(hardSentences).map(item => {
     return {
-      type: "sentence",
-      badge: "badge-hard",
-      badgeText: "🔥 Hard: Анализ предложения",
-      prompt: item.subtext,
-      question: item.sentence,
-      actualQ: item.question,
-      answer: item.ans,
-      options: shuffle(item.options)
+      mode,
+      item,
+      optionsEn: shuffle([rightEn, ...distEn])
     };
   });
 }
 
-function renderCard() {
-  const isS1 = (stage === 1);
-  const tasks = isS1 ? stage1Tasks : stage2Tasks;
-  const t = tasks[currentIdx];
-
-  document.getElementById("stage-indicator").textContent = isS1 ? "ЭТАП 1: ТЕРМИНЫ" : "ЭТАП 2: КОНТЕКСТ И ПРЕДЛОЖЕНИЯ";
-  document.getElementById("q-counter").textContent = `Задание ${currentIdx + 1} / ${tasks.length}`;
-  document.getElementById("score-box").textContent = `Очки: ${score}`;
+function updateHeader() {
+  document.getElementById("q-counter").textContent = `${idx + 1} / ${deck.length}`;
   document.getElementById("lives-box").textContent = "❤️".repeat(lives) + "🖤".repeat(3 - lives);
+  document.getElementById("score-box").textContent = `Очки: ${score}`;
+}
 
+function renderStep() {
+  updateHeader();
+  const q = deck[idx];
   const badge = document.getElementById("mode-badge");
-  badge.className = `badge ${t.badge}`;
-  badge.textContent = t.badgeText;
+  const target = document.getElementById("target-word");
+  const hint = document.getElementById("hint-sub");
+  const area = document.getElementById("interaction-area");
+  const fb = document.getElementById("feedback");
 
-  document.getElementById("task-prompt").textContent = t.prompt;
-  document.getElementById("task-question").textContent = t.question;
-  
-  const sub = document.getElementById("context-subtext");
-  if (t.type === "sentence") {
-    sub.textContent = t.actualQ;
-    sub.style.display = "block";
-    sub.style.color = "#38bdf8";
-    sub.style.fontWeight = "700";
-  } else {
-    sub.style.display = "none";
-  }
-
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("feedback").className = "feedback-box";
+  fb.textContent = "";
+  fb.className = "feedback";
   document.getElementById("next-btn").style.display = "none";
-
-  const area = document.getElementById("interactive-area");
   area.innerHTML = "";
 
-  if (t.type === "input" || t.type === "anagram") {
-    area.innerHTML = `
-      <div class="input-group">
-        <input type="text" id="user-input" placeholder="Введи термин..." autocomplete="off" autofocus />
-        <button class="submit-btn" onclick="checkInput()">Подтвердить</button>
-      </div>
-    `;
-    const inputField = document.getElementById("user-input");
-    inputField.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") checkInput();
+  if (q.mode === "CONTEXT") {
+    badge.className = "badge b-context";
+    badge.textContent = "ВСТАВЬ СЛОВО В ПРЕДЛОЖЕНИЕ";
+    target.textContent = q.item.sent_en;
+    hint.textContent = q.item.sent_ru;
+
+    const list = document.createElement("div");
+    list.className = "options-list";
+    q.optionsEn.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.textContent = opt;
+      btn.onclick = () => checkChoice(btn, opt, q.item.en[0]);
+      list.appendChild(btn);
     });
-  } else if (t.type === "true_false") {
-    area.innerHTML = `
-      <div class="tf-grid">
-        <button class="opt-btn" onclick="checkTF('ПРАВДА', this)">✅ ПРАВДА</button>
-        <button class="opt-btn" onclick="checkTF('ЛОЖЬ', this)">❌ ЛОЖЬ</button>
-      </div>
-    `;
-  } else if (t.type === "choice" || t.type === "sentence") {
+    area.appendChild(list);
+
+  } else if (q.mode === "TYPE") {
+    const isRuToEn = Math.random() < 0.5;
+    badge.className = "badge b-type";
+    badge.textContent = isRuToEn ? "РУЧНОЙ ВВОД (НА АНГЛИЙСКОМ)" : "РУЧНОЙ ВВОД (НА РУССКОМ)";
+    target.textContent = isRuToEn ? q.item.ru.join(" / ") : q.item.en.join(" / ");
+    hint.textContent = isRuToEn ? "Напиши английский термин:" : "Напиши перевод по-русски:";
+
     const wrap = document.createElement("div");
-    wrap.className = "options-grid";
-    t.options.forEach(opt => {
-      const b = document.createElement("button");
-      b.className = "opt-btn";
-      b.textContent = opt;
-      b.onclick = () => checkChoice(opt, b);
-      wrap.appendChild(b);
-    });
+    wrap.className = "input-wrap";
+    wrap.innerHTML = `
+      <input type="text" id="pro-inp" placeholder="Введи ответ и нажми Enter..." autocomplete="off" />
+      <button class="submit-btn" id="pro-sub-btn">Проверить ➔</button>
+    `;
     area.appendChild(wrap);
-  }
-}
 
-function handleSuccess() {
-  score += (stage === 1 ? 10 : 25);
-  const fb = document.getElementById("feedback");
-  fb.className = "feedback-box fb-good";
-  fb.textContent = "Верно!";
-  document.getElementById("score-box").textContent = `Очки: ${score}`;
-  document.getElementById("next-btn").style.display = "block";
-}
+    const inp = document.getElementById("pro-inp");
+    const subBtn = document.getElementById("pro-sub-btn");
+    const validList = isRuToEn ? q.item.en : q.item.ru;
+    const displayRight = isRuToEn ? q.item.en.join(" / ") : q.item.ru.join(" / ");
 
-function handleFailure(correct) {
-  lives--;
-  document.getElementById("lives-box").textContent = "❤️".repeat(Math.max(0, lives)) + "🖤".repeat(3 - Math.max(0, lives));
-  const fb = document.getElementById("feedback");
-  fb.className = "feedback-box fb-bad";
-  fb.textContent = `Неверно. Правильный ответ: «${correct}»`;
-  document.getElementById("next-btn").style.display = "block";
-
-  if (lives <= 0) {
-    setTimeout(gameOver, 500);
-  }
-}
-
-function checkInput() {
-  const inp = document.getElementById("user-input");
-  if (!inp || inp.disabled) return;
-  inp.disabled = true;
-  document.querySelector(".submit-btn").disabled = true;
-
-  const val = inp.value.trim().toLowerCase();
-  const t = stage1Tasks[currentIdx];
-
-  if (val === t.answer) {
-    inp.style.borderColor = "#4ade80";
-    handleSuccess();
-  } else {
-    inp.style.borderColor = "#f87171";
-    handleFailure(t.answer);
-  }
-}
-
-function checkTF(val, btn) {
-  const buttons = document.querySelectorAll(".tf-grid button");
-  buttons.forEach(b => b.disabled = true);
-  const t = stage1Tasks[currentIdx];
-
-  if (val === t.answer) {
-    btn.classList.add("correct");
-    handleSuccess();
-  } else {
-    btn.classList.add("wrong");
-    handleFailure(`${t.answer} (На самом деле: «${t.realRu}»)`);
-  }
-}
-
-function checkChoice(val, btn) {
-  const tasks = (stage === 1) ? stage1Tasks : stage2Tasks;
-  const t = tasks[currentIdx];
-  const buttons = document.querySelectorAll(".options-grid button");
-  buttons.forEach(b => b.disabled = true);
-
-  if (val === t.answer) {
-    btn.classList.add("correct");
-    handleSuccess();
-  } else {
-    btn.classList.add("wrong");
-    buttons.forEach(b => {
-      if (b.textContent === t.answer) b.classList.add("correct");
+    subBtn.onclick = () => checkTyping(inp, subBtn, validList, displayRight);
+    inp.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") checkTyping(inp, subBtn, validList, displayRight);
     });
-    handleFailure(t.answer);
+    inp.focus();
+
+  } else {
+    badge.className = "badge b-choice";
+    badge.textContent = "БЫСТРЫЙ ПЕРЕВОД";
+    target.textContent = q.item.ru.join(", ");
+    hint.textContent = "Выбери правильный английский термин:";
+
+    const list = document.createElement("div");
+    list.className = "options-list";
+    q.optionsEn.forEach(opt => {
+      const btn = document.createElement("button");
+      btn.className = "opt-btn";
+      btn.textContent = opt;
+      btn.onclick = () => checkChoice(btn, opt, q.item.en[0]);
+      list.appendChild(btn);
+    });
+    area.appendChild(list);
+  }
+}
+
+function checkChoice(clickedBtn, chosen, rightAns) {
+  const allBtns = document.querySelectorAll(".opt-btn");
+  allBtns.forEach(b => {
+    b.disabled = true;
+    if (b.textContent === rightAns) b.classList.add("correct");
+  });
+
+  const fb = document.getElementById("feedback");
+  if (chosen === rightAns) {
+    score += 15;
+    fb.className = "feedback fb-ok";
+    fb.textContent = "Верно! +15 очков";
+  } else {
+    lives--;
+    clickedBtn.classList.add("wrong");
+    fb.className = "feedback fb-err";
+    fb.textContent = `Ошибка! Минус жизнь. Правильно: ${rightAns}`;
+  }
+  updateHeader();
+  checkGameOverOrNext();
+}
+
+function checkTyping(inp, subBtn, validList, displayRight) {
+  if (inp.disabled) return;
+  const val = cleanStr(inp.value);
+  if (!val) return;
+
+  inp.disabled = true;
+  subBtn.disabled = true;
+
+  const isOk = validList.some(a => cleanStr(a) === val);
+  const fb = document.getElementById("feedback");
+
+  if (isOk) {
+    score += 20;
+    inp.style.borderColor = "#4ade80";
+    fb.className = "feedback fb-ok";
+    fb.textContent = "Точно! +20 очков";
+  } else {
+    lives--;
+    inp.style.borderColor = "#f87171";
+    fb.className = "feedback fb-err";
+    fb.textContent = `Неверно (-1 жизнь). Правильно: «${displayRight}»`;
+  }
+  updateHeader();
+  checkGameOverOrNext();
+}
+
+function checkGameOverOrNext() {
+  if (lives <= 0) {
+    setTimeout(() => {
+      document.getElementById("pro-card").innerHTML = `
+        <h2 style="color: #f87171; font-size: 24px; margin-bottom: 10px;">Судно затонуло! (0 жизней)</h2>
+        <p style="font-size: 16px; color: #cbd5e1; margin-bottom: 16px;">Пройдено слов: <b>${idx} из ${deck.length}</b> | Очки: <b>${score}</b></p>
+        <button class="next-btn" style="display:block;" onclick="location.reload()">Попробовать снова</button>
+      `;
+    }, 900);
+  } else {
+    const nb = document.getElementById("next-btn");
+    nb.style.display = "block";
+    nb.focus();
   }
 }
 
 function nextStep() {
-  const currentTasks = (stage === 1) ? stage1Tasks : stage2Tasks;
-  currentIdx++;
-
-  if (currentIdx < currentTasks.length && lives > 0) {
-    renderCard();
-  } else if (stage === 1 && lives > 0) {
-    // Переход на Этап 2
-    stage = 2;
-    currentIdx = 0;
-    renderTransitionScreen();
-  } else if (lives > 0) {
-    victory();
+  idx++;
+  if (idx < deck.length) {
+    renderStep();
+  } else {
+    document.getElementById("pro-card").innerHTML = `
+      <h2 style="color: #4ade80; font-size: 24px; margin-bottom: 10px;">PRO-режим пройден!</h2>
+      <p style="font-size: 17px; margin-bottom: 16px;">Все 62 слова позади! Итоговый счёт: <b>${score}</b></p>
+      <button class="next-btn" style="display:block;" onclick="location.reload()">Сыграть ещё раз</button>
+    `;
   }
 }
 
-function renderTransitionScreen() {
-  document.getElementById("game-card").innerHTML = `
-    <span class="badge badge-hard">НОВЫЙ УРОВЕНЬ</span>
-    <h2 style="font-size: 24px; color: #f87171; margin: 12px 0 10px 0;">Хардкорный уровень разблокирован 🔥</h2>
-    <p style="color: #cbd5e1; font-size: 15px; line-height: 1.5; margin-bottom: 16px;">
-      Базовые термины пройдены. Впереди <b>8 реальных технических предложений</b> на английском: аварии, дифферент, повреждения обшивки, работа балласта и водонепроницаемость.
-    </p>
-    <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">Жизни сохраняются: <b>${lives} из 3</b>. Цена ошибки здесь выше.</p>
-    <button class="next-action-btn" style="display:block;" onclick="startStage2()">Перейти к предложениям ➔</button>
-  `;
-}
-
-function startStage2() {
-  // Восстанавливаем разметку карточки
-  document.getElementById("game-card").innerHTML = `
-    <div class="top-stats">
-      <div>
-        <span class="stage-tag" id="stage-indicator">ЭТАП 2: ПРЕДЛОЖЕНИЯ</span> • 
-        <span id="q-counter">Задание 1 / 8</span>
-      </div>
-      <span class="lives" id="lives-box">❤️❤️❤️</span>
-      <span class="score" id="score-box">Очки: ${score}</span>
-    </div>
-
-    <span class="badge" id="mode-badge">РЕЖИМ</span>
-    <div class="task-prompt" id="task-prompt">ЗАДАНИЕ</div>
-    <div class="task-question" id="task-question">Загрузка...</div>
-    <div class="context-subtext" id="context-subtext"></div>
-
-    <div id="interactive-area"></div>
-    <div class="feedback-box" id="feedback"></div>
-    <button class="next-action-btn" id="next-btn" onclick="nextStep()">Дальше ➔</button>
-  `;
-  renderCard();
-}
-
-function gameOver() {
-  let rank = "Матрос 2-й статьи";
-  if (score >= 120) rank = "Вахтенный помощник";
-  if (score >= 200) rank = "Старший помощник";
-
-  document.getElementById("game-card").innerHTML = `
-    <h2 style="color: #f87171; font-size: 26px; margin-bottom: 10px;">Тест не пройден</h2>
-    <p style="color: #94a3b8; font-size: 15px; margin-bottom: 14px;">Закончились все 3 жизни.</p>
-    <div style="background: #0d1524; padding: 16px; border-radius: 10px; margin-bottom: 20px;">
-      <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">ФИНАЛЬНЫЙ СЧЁТ</div>
-      <div style="font-size: 24px; font-weight: 800; color: #38bdf8;">${score} очков</div>
-      <div style="font-size: 14px; color: #cbd5e1; margin-top: 6px;">Присвоенный уровень: <b>${rank}</b></div>
-    </div>
-    <button class="next-action-btn" style="display:block;" onclick="location.reload()">Пройти заново</button>
-  `;
-}
-
-function victory() {
-  let rank = "Капитан дальнего плавания";
-  if (score < 260) rank = "Старший механик";
-
-  document.getElementById("game-card").innerHTML = `
-    <h2 style="color: #4ade80; font-size: 26px; margin-bottom: 10px;">Полный курс завершён! 🏆</h2>
-    <p style="color: #cbd5e1; font-size: 15px; margin-bottom: 16px;">Пройдены как отдельные термины, так и разбор сложных предложений.</p>
-    <div style="background: #0d1524; padding: 16px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #1e293b;">
-      <div style="font-size: 14px; color: #64748b; margin-bottom: 4px;">РЕЗУЛЬТАТ</div>
-      <div style="font-size: 26px; font-weight: 800; color: #38bdf8; margin-bottom: 4px;">${score} очков</div>
-      <div style="font-size: 15px; color: #f8fafc;">Уровень: <b style="color: #4ade80;">${rank}</b></div>
-      <div style="font-size: 13px; color: #94a3b8; margin-top: 6px;">Остаток жизней: ${lives} из 3</div>
-    </div>
-    <button class="next-action-btn" style="display:block;" onclick="location.reload()">Сыграть ещё раз</button>
-  `;
-}
-
-initStage1();
-initStage2();
-renderCard();
+initGame();
+renderStep();
 </script>
 
 </body>

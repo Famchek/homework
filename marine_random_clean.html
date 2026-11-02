@@ -3,265 +3,902 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Морской рандомайзер ⚓</title>
+<title>Морской тренажёр: Все 62 слова (Тест)</title>
 <style>
-  * { box-sizing: border-box; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: #090d16;
-    color: #f8fafc;
+    background: #090e17;
+    color: #f1f5f9;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh;
-    margin: 0;
     padding: 16px;
   }
   .card {
-    background: #151f32;
-    border: 1px solid #1e293b;
-    padding: 24px;
+    background: #141e33;
+    border: 1px solid #1e2e4f;
     border-radius: 16px;
-    max-width: 500px;
+    max-width: 520px;
     width: 100%;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+    padding: 24px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
   }
-  .top-bar {
+  .top-stats {
     display: flex;
     justify-content: space-between;
-    font-size: 13px;
-    color: #94a3b8;
-    margin-bottom: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+    font-size: 14px;
+    font-weight: 600;
   }
+  .counter { color: #94a3b8; }
+  .score { color: #38bdf8; }
   .badge {
     display: inline-block;
     padding: 4px 10px;
     border-radius: 20px;
     font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    background: #0369a1;
-    color: #e0f2fe;
-    margin-bottom: 14px;
-  }
-  .word {
-    font-size: 24px;
     font-weight: 800;
-    margin-bottom: 22px;
-    color: #ffffff;
-    min-height: 64px;
-    display: flex;
-    align-items: center;
-    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
   }
-  .options {
+  .badge-ru-en { background: #0284c7; color: #ffffff; }
+  .badge-en-ru { background: #0d9488; color: #ffffff; }
+  .target-word {
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.35;
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+  .options-list {
     display: flex;
     flex-direction: column;
     gap: 10px;
   }
-  button.option {
-    background: #1e293b;
-    border: 2px solid #334155;
-    color: #f8fafc;
-    padding: 14px 16px;
+  .opt-btn {
+    background: #0d1524;
+    border: 2px solid #2d3b55;
     border-radius: 10px;
-    font-size: 16px;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.15s ease;
-  }
-  button.option:hover:not(:disabled) {
-    background: #27354f;
-    border-color: #38bdf8;
-  }
-  button.correct {
-    background: #15803d !important;
-    border-color: #4ade80 !important;
-    color: #ffffff !important;
-  }
-  button.wrong {
-    background: #b91c1c !important;
-    border-color: #f87171 !important;
-    color: #ffffff !important;
-  }
-  .feedback {
-    margin-top: 14px;
+    padding: 13px 16px;
     font-size: 15px;
     font-weight: 600;
-    min-height: 22px;
+    color: #f8fafc;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.15s;
   }
-  .feedback.good { color: #4ade80; }
-  .feedback.bad { color: #f87171; }
+  .opt-btn:hover:not(:disabled) {
+    border-color: #38bdf8;
+    background: #162238;
+  }
+  .opt-btn.correct {
+    background: #064e3b;
+    border-color: #4ade80;
+    color: #ffffff;
+  }
+  .opt-btn.wrong {
+    background: #450a0a;
+    border-color: #f87171;
+    color: #fca5a5;
+  }
   .next-btn {
-    margin-top: 16px;
+    margin-top: 18px;
     width: 100%;
     background: #0284c7;
+    color: #ffffff;
     border: none;
-    color: white;
     padding: 14px;
     border-radius: 10px;
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
     cursor: pointer;
     display: none;
   }
   .next-btn:hover { background: #0369a1; }
-  .result-title { font-size: 24px; color: #38bdf8; margin: 0 0 10px 0; }
 </style>
 </head>
 <body>
 
-<div class="card" id="quiz-box">
-  <div class="top-bar">
-    <span id="progress">Вопрос 1 / 30</span>
-    <span id="streak">🔥 Стрик: 0 | Очки: 0</span>
+<div class="card" id="quiz-card">
+  <div class="top-stats">
+    <span class="counter" id="q-counter">Вопрос 1 из 62</span>
+    <span class="score" id="score-box">Верно: 0</span>
   </div>
-  <div class="badge" id="direction-badge">🇷🇺 ➔ 🇬🇧 ПЕРЕВОДИ НА АНГЛИЙСКИЙ</div>
-  <div class="word" id="word-text">Загрузка...</div>
-  <div class="options" id="options-box"></div>
-  <div class="feedback" id="feedback"></div>
+  <span class="badge" id="mode-badge">АНГЛИЙСКИЙ ➔ РУССКИЙ</span>
+  <div class="target-word" id="target-word">Загрузка...</div>
+  <div class="options-list" id="options-list"></div>
   <button class="next-btn" id="next-btn" onclick="nextQuestion()">Дальше ➔</button>
 </div>
 
 <script>
-// Словарь: 30 морских терминов
-const vocabulary = [
-  { ru: "люк", en: "hatch" },
-  { ru: "грузовая стрела", en: "derrick" },
-  { ru: "бортовая цистерна", en: "wing tank" },
-  { ru: "второе дно", en: "tanktop" },
-  { ru: "междудонная цистерна", en: "double bottom tank" },
-  { ru: "стойка, мачта", en: "post" },
-  { ru: "кормовой, самый задний", en: "rearmost" },
-  { ru: "лебедка", en: "winch" },
-  { ru: "форштевень", en: "stem" },
-  { ru: "набор корпуса судна", en: "framing" },
-  { ru: "обшивка, настил", en: "plating" },
-  { ru: "левый борт", en: "port" },
-  { ru: "правый борт", en: "starboard" },
-  { ru: "переборка", en: "bulkhead" },
-  { ru: "отсек", en: "compartment" },
-  { ru: "продольный (с носа до кормы)", en: "fore and aft" },
-  { ru: "прогулочная палуба", en: "promenade deck" },
-  { ru: "крен (на 'l')", en: "list" },
-  { ru: "крен; наклонять(ся) (на 'h')", en: "heel" },
-  { ru: "дифферент", en: "trim" },
-  { ru: "решетка, гребень", en: "grid" },
-  { ru: "ют", en: "poop" },
-  { ru: "форпик", en: "forepeak" },
-  { ru: "ахтерпик", en: "afterpeak" },
-  { ru: "марки углубления", en: "draught marks" },
-  { ru: "давление текучей среды", en: "fluid pressure" },
-  { ru: "неправильная нагрузка", en: "faulty loading" },
-  { ru: "вдоль и поперек", en: "across the ship and along" },
-  { ru: "водонепроницаемый", en: "watertight" },
-  { ru: "мостик, средняя надстройка", en: "bridge" }
+const items = [
+  {
+    "en": [
+      "general"
+    ],
+    "ru": [
+      "общий"
+    ],
+    "sent_en": "Here is the ___ description of the vessel.",
+    "sent_ru": "(Общее описание судна)"
+  },
+  {
+    "en": [
+      "hull"
+    ],
+    "ru": [
+      "корпус"
+    ],
+    "sent_en": "The main body of a ship is called a ___.",
+    "sent_ru": "(Основная часть судна — корпус)"
+  },
+  {
+    "en": [
+      "superstructure"
+    ],
+    "ru": [
+      "надстройка"
+    ],
+    "sent_en": "All permanent housing above the main deck is known as ___.",
+    "sent_ru": "(Все постройки над главной палубой — надстройка)"
+  },
+  {
+    "en": [
+      "foremost"
+    ],
+    "ru": [
+      "передний",
+      "носовой",
+      "передний носовой"
+    ],
+    "sent_en": "The ___ part of the hull is called the bow.",
+    "sent_ru": "(Самая передняя/носовая часть корпуса — нос)"
+  },
+  {
+    "en": [
+      "rearmost"
+    ],
+    "ru": [
+      "кормовой",
+      "самый задний",
+      "кормовой самый задний"
+    ],
+    "sent_en": "The ___ part of the hull is called the stern.",
+    "sent_ru": "(Самая задняя/кормовая часть корпуса — корма)"
+  },
+  {
+    "en": [
+      "midships"
+    ],
+    "ru": [
+      "середина судна",
+      "мидель"
+    ],
+    "sent_en": "The part between the bow and the stern is called ___.",
+    "sent_ru": "(Часть между носом и кормой — середина судна / мидель)"
+  },
+  {
+    "en": [
+      "bridge"
+    ],
+    "ru": [
+      "мостик",
+      "средняя надстройка",
+      "мостик средняя надстройка"
+    ],
+    "sent_en": "The captain controls the vessel from the navigation ___.",
+    "sent_ru": "(Капитан управляет судном с ходового мостика)"
+  },
+  {
+    "en": [
+      "poop"
+    ],
+    "ru": [
+      "ют"
+    ],
+    "sent_en": "The after raised part of the deck is called the ___.",
+    "sent_ru": "(Кормовая приподнятая часть палубы — ют)"
+  },
+  {
+    "en": [
+      "framing"
+    ],
+    "ru": [
+      "набор корпуса судна",
+      "набор корпуса",
+      "набор"
+    ],
+    "sent_en": "The hull is made up of ___ covered with plating.",
+    "sent_ru": "(Корпус состоит из набора, покрытого обшивкой)"
+  },
+  {
+    "en": [
+      "plating"
+    ],
+    "ru": [
+      "обшивка",
+      "настил",
+      "обшивка настил"
+    ],
+    "sent_en": "Frames of the ship's hull are covered with steel ___.",
+    "sent_ru": "(Шпангоуты корпуса покрыты стальной обшивкой)"
+  },
+  {
+    "en": [
+      "port"
+    ],
+    "ru": [
+      "порт",
+      "левый борт",
+      "порт левый борт"
+    ],
+    "sent_en": "The left side of the ship when facing forward is ___.",
+    "sent_ru": "(Левая сторона судна при взгляде на нос — левый борт)"
+  },
+  {
+    "en": [
+      "starboard"
+    ],
+    "ru": [
+      "правый борт"
+    ],
+    "sent_en": "The right side of the vessel is called ___.",
+    "sent_ru": "(Правая сторона судна — правый борт)"
+  },
+  {
+    "en": [
+      "bottom"
+    ],
+    "ru": [
+      "днище",
+      "дно",
+      "днище дно"
+    ],
+    "sent_en": "The hull is the area between the main deck, the sides and the ___.",
+    "sent_ru": "(Зона между главной палубой, бортами и днищем)"
+  },
+  {
+    "en": [
+      "side"
+    ],
+    "ru": [
+      "борт",
+      "сторона",
+      "борт сторона"
+    ],
+    "sent_en": "If a ship has double ___s, the space between them contains wing tanks.",
+    "sent_ru": "(Если у судна двойные борта, там расположены бортовые танки)"
+  },
+  {
+    "en": [
+      "deck"
+    ],
+    "ru": [
+      "палуба"
+    ],
+    "sent_en": "Cargo handling cranes are mounted on the main ___.",
+    "sent_ru": "(Грузовые краны установлены на главной палубе)"
+  },
+  {
+    "en": [
+      "upper deck"
+    ],
+    "ru": [
+      "верхняя палуба"
+    ],
+    "sent_en": "Waves were breaking over the ___ during the storm.",
+    "sent_ru": "(Волны перекатывались через верхнюю палубу)"
+  },
+  {
+    "en": [
+      "middle deck"
+    ],
+    "ru": [
+      "средняя палуба"
+    ],
+    "sent_en": "Cabins for the crew are located on the ___.",
+    "sent_ru": "(Каюты экипажа расположены на средней палубе)"
+  },
+  {
+    "en": [
+      "lower deck"
+    ],
+    "ru": [
+      "нижняя палуба"
+    ],
+    "sent_en": "Heavy machinery is stored below on the ___.",
+    "sent_ru": "(Тяжелое оборудование хранится на нижней палубе)"
+  },
+  {
+    "en": [
+      "bridge deck"
+    ],
+    "ru": [
+      "палуба мостика"
+    ],
+    "sent_en": "Navigation equipment is installed on the ___.",
+    "sent_ru": "(Навигационные приборы установлены на палубе мостика)"
+  },
+  {
+    "en": [
+      "boat deck"
+    ],
+    "ru": [
+      "шлюпочная палуба"
+    ],
+    "sent_en": "Lifeboats are stationed along the ___.",
+    "sent_ru": "(Спасательные шлюпки размещены на шлюпочной палубе)"
+  },
+  {
+    "en": [
+      "promenade deck"
+    ],
+    "ru": [
+      "прогулочная палуба"
+    ],
+    "sent_en": "Passengers can walk and relax on the ___.",
+    "sent_ru": "(Пассажиры могут гулять на прогулочной палубе)"
+  },
+  {
+    "en": [
+      "fore"
+    ],
+    "ru": [
+      "перед",
+      "передний",
+      "впереди",
+      "перед передний впереди"
+    ],
+    "sent_en": "At the ___ end of the hull are the forepeak tanks.",
+    "sent_ru": "(В передней/носовой оконечности корпуса находятся форпиковые танки)"
+  },
+  {
+    "en": [
+      "forward"
+    ],
+    "ru": [
+      "в носовой части",
+      "вперед"
+    ],
+    "sent_en": "The ___ raised part of the deck is called the forecastle.",
+    "sent_ru": "(Приподнятая часть палубы в носовой части — бак)"
+  },
+  {
+    "en": [
+      "aft",
+      "after",
+      "abaft"
+    ],
+    "ru": [
+      "задний",
+      "сзади",
+      "в кормовой части",
+      "кормовой"
+    ],
+    "sent_en": "At the ___ end of the hull are the afterpeak tanks.",
+    "sent_ru": "(В задней/кормовой оконечности находятся ахтерпиковые танки)"
+  },
+  {
+    "en": [
+      "fore and aft"
+    ],
+    "ru": [
+      "продольной",
+      "продольный",
+      "с носа до кормы"
+    ],
+    "sent_en": "The angle that a ship is making ___ with the water is known as trim.",
+    "sent_ru": "(Продольный угол наклона судна с носа до кормы — дифферент)"
+  },
+  {
+    "en": [
+      "amidships"
+    ],
+    "ru": [
+      "посредине судна",
+      "посередине судна",
+      "на миделе"
+    ],
+    "sent_en": "The heaviest cargo is usually stowed ___.",
+    "sent_ru": "(Самый тяжелый груз обычно укладывают посредине судна)"
+  },
+  {
+    "en": [
+      "main"
+    ],
+    "ru": [
+      "главный",
+      "основной",
+      "главный основной"
+    ],
+    "sent_en": "The hull is the ___ part of the ship.",
+    "sent_ru": "(Корпус — главная/основная часть судна)"
+  },
+  {
+    "en": [
+      "waterline"
+    ],
+    "ru": [
+      "ватерлиния"
+    ],
+    "sent_en": "Freeboard is the distance between the ___ and the main deck.",
+    "sent_ru": "(Надводный борт — расстояние между ватерлинией и главной палубой)"
+  },
+  {
+    "en": [
+      "watertight"
+    ],
+    "ru": [
+      "водонепроницаемый"
+    ],
+    "sent_en": "The hull is divided up into a number of ___ compartments.",
+    "sent_ru": "(Корпус разделен на ряд водонепроницаемых отсеков)"
+  },
+  {
+    "en": [
+      "engine room"
+    ],
+    "ru": [
+      "моторное отделение",
+      "машинное отделение"
+    ],
+    "sent_en": "The hull contains the ___, cargo spaces and a number of tanks.",
+    "sent_ru": "(В корпусе находятся моторное отделение, грузовые помещения и танки)"
+  },
+  {
+    "en": [
+      "tank"
+    ],
+    "ru": [
+      "танк",
+      "резервуар",
+      "цистерна"
+    ],
+    "sent_en": "In liquid cargo vessels the cargo space is divided into ___s.",
+    "sent_ru": "(На наливных судах грузовое пространство делится на танки/цистерны)"
+  },
+  {
+    "en": [
+      "dry cargo ship"
+    ],
+    "ru": [
+      "сухогруз"
+    ],
+    "sent_en": "In ___s the cargo space is divided into holds.",
+    "sent_ru": "(На сухогрузах грузовое пространство разделено на трюмы)"
+  },
+  {
+    "en": [
+      "ship's underwater body",
+      "underwater body"
+    ],
+    "ru": [
+      "подводная часть корпуса",
+      "подводная часть"
+    ],
+    "sent_en": "The part of the hull below water is the ___.",
+    "sent_ru": "(Часть корпуса ниже воды — подводная часть корпуса)"
+  },
+  {
+    "en": [
+      "compartment"
+    ],
+    "ru": [
+      "отсек",
+      "помещение"
+    ],
+    "sent_en": "Bulkheads divide the interior into watertight ___s.",
+    "sent_ru": "(Переборки делят внутреннее пространство на водонепроницаемые отсеки)"
+  },
+  {
+    "en": [
+      "bulkhead"
+    ],
+    "ru": [
+      "переборка"
+    ],
+    "sent_en": "___s are vertical steel walls going across the ship and along.",
+    "sent_ru": "(Переборки — это вертикальные стальные стенки)"
+  },
+  {
+    "en": [
+      "afterpeak"
+    ],
+    "ru": [
+      "ахтерпик",
+      "ахтпик"
+    ],
+    "sent_en": "At the after end of the hull are the ___ tanks.",
+    "sent_ru": "(В кормовой оконечности корпуса расположены танки ахтерпика)"
+  },
+  {
+    "en": [
+      "wing tank"
+    ],
+    "ru": [
+      "бортовая цистерна",
+      "бортовой танк"
+    ],
+    "sent_en": "If a ship has double sides, the space between them contains ___s.",
+    "sent_ru": "(Пространство между двойными бортами содержит бортовые цистерны)"
+  },
+  {
+    "en": [
+      "double bottom tank"
+    ],
+    "ru": [
+      "междудонная цистерна",
+      "междудонный танк"
+    ],
+    "sent_en": "The space between the tank top and the bottom contains ___s.",
+    "sent_ru": "(Пространство под вторым дном содержит междудонные цистерны)"
+  },
+  {
+    "en": [
+      "tanktop",
+      "tank top"
+    ],
+    "ru": [
+      "второе дно",
+      "палубное перекрытие над цистернами двойного дна",
+      "двойное дно"
+    ],
+    "sent_en": "The space between the ___ and the bottom contains double bottom tanks.",
+    "sent_ru": "(Пространство между вторым дном и днищем)"
+  },
+  {
+    "en": [
+      "winch"
+    ],
+    "ru": [
+      "лебедка",
+      "лебёдка"
+    ],
+    "sent_en": "On deck there are cargo handling facilities, such as cranes and ___es.",
+    "sent_ru": "(На палубе установлены краны и лебедки)"
+  },
+  {
+    "en": [
+      "derrick"
+    ],
+    "ru": [
+      "грузовая стрела",
+      "стрела"
+    ],
+    "sent_en": "Ships having ___s also have cargo masts and cargo posts.",
+    "sent_ru": "(Суда с грузовыми стрелами также имеют грузовые мачты и колонки)"
+  },
+  {
+    "en": [
+      "post"
+    ],
+    "ru": [
+      "стойка",
+      "мачта",
+      "стойка мачта"
+    ],
+    "sent_en": "Derricks are supported by cargo masts and Samson ___s on deck.",
+    "sent_ru": "(Грузовые стрелы крепятся к мачтам и стойкам/колонкам на палубе)"
+  },
+  {
+    "en": [
+      "to incline",
+      "incline"
+    ],
+    "ru": [
+      "наклонять",
+      "иметь тенденцию",
+      "наклоняться"
+    ],
+    "sent_en": "Supported by fluid pressure, the ship will ___ in any direction during loading.",
+    "sent_ru": "(Под давлением воды судно будет наклоняться в любом направлении)"
+  },
+  {
+    "en": [
+      "watch"
+    ],
+    "ru": [
+      "вахта",
+      "наблюдение",
+      "следить",
+      "наблюдать"
+    ],
+    "sent_en": "Therefore the ship's position below water must be closely ___ed.",
+    "sent_ru": "(За положением подводной части судна нужно внимательно следить/наблюдать)"
+  },
+  {
+    "en": [
+      "trim"
+    ],
+    "ru": [
+      "дифферент"
+    ],
+    "sent_en": "The angle that a ship is making fore and aft with the water is known as ___.",
+    "sent_ru": "(Продольный наклон судна на нос или корму называется дифферентом)"
+  },
+  {
+    "en": [
+      "stem"
+    ],
+    "ru": [
+      "форштевень"
+    ],
+    "sent_en": "Water levels are read by numbers painted on the ship's ___.",
+    "sent_ru": "(Уровень воды считывают по цифрам на форштевне судна)"
+  },
+  {
+    "en": [
+      "heel"
+    ],
+    "ru": [
+      "крен",
+      "наклонять",
+      "наклоняться"
+    ],
+    "sent_en": "Inclination from one side to another caused by faulty loading is known as ___.",
+    "sent_ru": "(Наклон с борта на борт от неправильной погрузки — крен)"
+  },
+  {
+    "en": [
+      "grid"
+    ],
+    "ru": [
+      "решетка",
+      "гребень",
+      "решётка"
+    ],
+    "sent_en": "A protective steel ___ covers the intake opening.",
+    "sent_ru": "(Защитная стальная решетка закрывает впускное отверстие)"
+  },
+  {
+    "en": [
+      "fluid pressure"
+    ],
+    "ru": [
+      "давление текучей среды",
+      "давление среды"
+    ],
+    "sent_en": "Since a ship is supported by ___, she will incline during loading.",
+    "sent_ru": "(Так как судно поддерживается давлением текучей среды...)"
+  },
+  {
+    "en": [
+      "list"
+    ],
+    "ru": [
+      "крен"
+    ],
+    "sent_en": "A ___ or inclination from one side to another is caused by faulty loading.",
+    "sent_ru": "(Крен или наклон с борта на борт вызван неправильной погрузкой)"
+  },
+  {
+    "en": [
+      "across the ship and along"
+    ],
+    "ru": [
+      "вдоль и поперек",
+      "вдоль и поперёк"
+    ],
+    "sent_en": "Bulkheads are vertical steel walls going ___.",
+    "sent_ru": "(Переборки — стальные стенки, идущие вдоль и поперек судна)"
+  },
+  {
+    "en": [
+      "permanent housing"
+    ],
+    "ru": [
+      "постоянные постройки",
+      "постоянные надстройки"
+    ],
+    "sent_en": "All ___ above the main deck is known as superstructure.",
+    "sent_ru": "(Все постоянные постройки над главной палубой — это надстройка)"
+  },
+  {
+    "en": [
+      "to gain more space for cargo",
+      "gain more space for cargo"
+    ],
+    "ru": [
+      "чтобы выиграть больше места для груза",
+      "выиграть больше места для груза"
+    ],
+    "sent_en": "Vessels are built with the after engine room ___.",
+    "sent_ru": "(Суда строят с кормовым МО, чтобы выиграть больше места для груза)"
+  },
+  {
+    "en": [
+      "draught marks"
+    ],
+    "ru": [
+      "марки углубления"
+    ],
+    "sent_en": "Numbers painted on the ship's stem are called ___.",
+    "sent_ru": "(Цифры на форштевне называются марками углубления)"
+  },
+  {
+    "en": [
+      "faulty loading"
+    ],
+    "ru": [
+      "неправильная нагрузка",
+      "неправильная погрузка"
+    ],
+    "sent_en": "Inclination from one side to another is caused by ___.",
+    "sent_ru": "(Наклон с борта на борт вызывается неправильной нагрузкой)"
+  },
+  {
+    "en": [
+      "forepeak"
+    ],
+    "ru": [
+      "форпик"
+    ],
+    "sent_en": "At the fore end of the hull are the ___ tanks.",
+    "sent_ru": "(В носовой оконечности корпуса находятся танки форпика)"
+  },
+  {
+    "en": [
+      "hatch"
+    ],
+    "ru": [
+      "люк"
+    ],
+    "sent_en": "Openings giving access to cargo holds are called ___es.",
+    "sent_ru": "(Отверстия для доступа в трюмы называются люками)"
+  },
+  {
+    "en": [
+      "hold"
+    ],
+    "ru": [
+      "трюм"
+    ],
+    "sent_en": "In dry cargo ships the cargo space is divided into ___s.",
+    "sent_ru": "(На сухогрузах грузовое пространство делится на трюмы)"
+  },
+  {
+    "en": [
+      "liquid cargo ship"
+    ],
+    "ru": [
+      "танкер",
+      "наливное судно"
+    ],
+    "sent_en": "An oil tanker is the most common type of a ___.",
+    "sent_ru": "(Нефтяной танкер — самый распространенный тип наливного судна)"
+  },
+  {
+    "en": [
+      "access"
+    ],
+    "ru": [
+      "доступ"
+    ],
+    "sent_en": "Openings giving ___ to holds are called hatches.",
+    "sent_ru": "(Проемы, дающие доступ в трюмы, называются люками)"
+  },
+  {
+    "en": [
+      "space"
+    ],
+    "ru": [
+      "пространство",
+      "отсек",
+      "помещение"
+    ],
+    "sent_en": "The hull contains the engine room and cargo ___s.",
+    "sent_ru": "(Корпус вмещает машинное отделение и грузовые помещения)"
+  },
+  {
+    "en": [
+      "opening"
+    ],
+    "ru": [
+      "отверстие",
+      "крышка",
+      "проем"
+    ],
+    "sent_en": "___s giving access to holds are called hatches.",
+    "sent_ru": "(Отверстия/проемы, ведущие в трюмы, называются люками)"
+  }
 ];
 
 function shuffle(arr) {
-  return arr.slice().sort(() => Math.random() - 0.5);
+  const copy = arr.slice();
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
 }
 
-// Генерируем 30 вопросов: случайный порядок, случайное направление (ru->en или en->ru)
-let deck = [];
-let currentIndex = 0;
-let score = 0;
-let streak = 0;
+let questions = [];
+let idx = 0;
+let correct = 0;
 
-function initDeck() {
-  const shuffledVocab = shuffle(vocabulary);
-  deck = shuffledVocab.map(item => {
-    const isRuToEn = Math.random() < 0.5;
-    const question = isRuToEn ? item.ru : item.en;
-    const answer = isRuToEn ? item.en : item.ru;
-    
-    // Подбираем 3 ложных варианта из того же языка
-    const otherPool = vocabulary
-      .filter(v => (isRuToEn ? v.en : v.ru) !== answer)
-      .map(v => isRuToEn ? v.en : v.ru);
-    const distractors = shuffle(otherPool).slice(0, 3);
-    const options = shuffle([answer, ...distractors]);
-
+function initQuiz() {
+  const pool = shuffle(items);
+  questions = pool.map(item => {
+    const isEnToRu = Math.random() < 0.5;
+    const prompt = isEnToRu ? item.en.join(" / ") : item.ru.join(", ");
+    const rightAns = isEnToRu ? item.ru.join(", ") : item.en.join(" / ");
+    const distractors = shuffle(items.filter(x => x !== item))
+      .slice(0, 3)
+      .map(x => isEnToRu ? x.ru.join(", ") : x.en.join(" / "));
     return {
-      type: isRuToEn ? "🇷🇺 ➔ 🇬🇧 ПЕРЕВОДИ НА АНГЛИЙСКИЙ" : "🇬🇧 ➔ 🇷🇺 ПЕРЕВОДИ НА РУССКИЙ",
-      question,
-      answer,
-      options
+      isEnToRu,
+      prompt,
+      rightAns,
+      options: shuffle([rightAns, ...distractors])
     };
   });
 }
 
-function loadCard() {
-  const q = deck[currentIndex];
-  document.getElementById("progress").textContent = `Вопрос ${currentIndex + 1} / ${deck.length}`;
-  document.getElementById("streak").textContent = `🔥 Стрик: ${streak} | Очки: ${score}`;
-  document.getElementById("direction-badge").textContent = q.type;
-  document.getElementById("word-text").textContent = q.question;
-  document.getElementById("feedback").textContent = "";
-  document.getElementById("feedback").className = "feedback";
-  document.getElementById("next-btn").style.display = "none";
+function renderQuestion() {
+  const q = questions[idx];
+  document.getElementById("q-counter").textContent = `Вопрос ${idx + 1} из ${questions.length}`;
+  document.getElementById("score-box").textContent = `Верно: ${correct}`;
 
-  const container = document.getElementById("options-box");
-  container.innerHTML = "";
+  const badge = document.getElementById("mode-badge");
+  if (q.isEnToRu) {
+    badge.className = "badge badge-en-ru";
+    badge.textContent = "🇬🇧 ➔ 🇷🇺 ВЫБЕРИ ПЕРЕВОД";
+  } else {
+    badge.className = "badge badge-ru-en";
+    badge.textContent = "🇷🇺 ➔ 🇬🇧 ВЫБЕРИ ТЕРМИН";
+  }
+
+  document.getElementById("target-word").textContent = q.prompt;
+  const list = document.getElementById("options-list");
+  list.innerHTML = "";
 
   q.options.forEach(opt => {
     const btn = document.createElement("button");
-    btn.className = "option";
+    btn.className = "opt-btn";
     btn.textContent = opt;
-    btn.onclick = () => answer(btn, opt, q.answer);
-    container.appendChild(btn);
+    btn.onclick = () => selectOption(btn, opt, q.rightAns);
+    list.appendChild(btn);
   });
+
+  document.getElementById("next-btn").style.display = "none";
 }
 
-function answer(btn, chosen, correct) {
-  const buttons = document.querySelectorAll("#options-box button");
-  buttons.forEach(b => b.disabled = true);
-  const fb = document.getElementById("feedback");
-
-  if (chosen === correct) {
-    btn.classList.add("correct");
-    score++;
-    streak++;
-    fb.className = "feedback good";
-    fb.textContent = "Верно!";
+function selectOption(clickedBtn, chosen, rightAns) {
+  const allBtns = document.querySelectorAll(".opt-btn");
+  allBtns.forEach(b => {
+    b.disabled = true;
+    if (b.textContent === rightAns) {
+      b.classList.add("correct");
+    }
+  });
+  if (chosen === rightAns) {
+    correct++;
+    document.getElementById("score-box").textContent = `Верно: ${correct}`;
   } else {
-    btn.classList.add("wrong");
-    streak = 0;
-    fb.className = "feedback bad";
-    buttons.forEach(b => {
-      if (b.textContent === correct) b.classList.add("correct");
-    });
-    fb.textContent = `Неверно. Правильно: «${correct}»`;
+    clickedBtn.classList.add("wrong");
   }
-
-  document.getElementById("streak").textContent = `🔥 Стрик: ${streak} | Очки: ${score}`;
   document.getElementById("next-btn").style.display = "block";
 }
 
 function nextQuestion() {
-  currentIndex++;
-  if (currentIndex < deck.length) {
-    loadCard();
+  idx++;
+  if (idx < questions.length) {
+    renderQuestion();
   } else {
-    renderEnd();
+    document.getElementById("quiz-card").innerHTML = `
+      <h2 style="color: #38bdf8; font-size: 24px; margin-bottom: 12px;">Тест завершён!</h2>
+      <p style="font-size: 18px; margin-bottom: 20px;">Правильных ответов: <b>${correct} из ${questions.length}</b></p>
+      <button class="next-btn" style="display:block;" onclick="location.reload()">Пройти заново</button>
+    `;
   }
 }
 
-function renderEnd() {
-  document.getElementById("quiz-box").innerHTML = `
-    <h2 class="result-title">Тест завершён! 🎉</h2>
-    <p style="font-size: 18px; margin: 12px 0;">Правильных ответов: <b>${score}</b> из <b>${deck.length}</b></p>
-    <button class="next-btn" style="display:block; margin-top:20px;" onclick="restart()">Пройти ещё раз (вопросы перемешаются)</button>
-  `;
-}
-
-function restart() {
-  location.reload();
-}
-
-initDeck();
-loadCard();
+initQuiz();
+renderQuestion();
 </script>
 
 </body>
