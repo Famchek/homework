@@ -590,7 +590,7 @@
 
     <div class="controls">
       <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()">
-      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
+      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
     </div>
   </header>
 
@@ -706,6 +706,33 @@
   <!-- Список карточек заданий -->
   <div id="tasks-container" class="task-list"><div class="task-card">
       <div class="card-meta">
+        <span class="subject-badge">МДК 01.02</span>
+        <span class="deadline-badge dl-normal">До 11.11.2026 (5 дн.)</span>
+      </div>
+      <div class="task-title">Подготовка к паре</div>
+      <div class="task-desc">На следующую пару:
+Линейка 
+Циркуль
+Транспортир
+Карандаш
+Карандаши цветные (или фломастеры)
+Ластик</div>
+      
+      
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" onchange="toggleTaskDone('task-1793945554795')">
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1793945554795')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1793945554795')">Удалить</button>
+        </div>
+      
+      </div>
+    </div><div class="task-card">
+      <div class="card-meta">
         <span class="subject-badge">Метрология и стандартизация</span>
         <span class="deadline-badge dl-urgent">До 07.11.2026 (Осталось 1 дн.)</span>
       </div>
@@ -777,7 +804,7 @@
         </div>
       
       </div>
-    </div><div class="task-card">
+    </div><div class="task-card done-card">
       <div class="card-meta">
         <span class="subject-badge">Иностранный язык</span>
         <span class="deadline-badge dl-overdue">До 02.11.2026 (Просрочено)</span>
@@ -838,7 +865,7 @@ Under fluid pressure during cargo operations, uneven loading can cause the ship 
       
       <div class="card-footer">
         <label class="check-label">
-          <input type="checkbox" onchange="toggleTaskDone('task-1')">
+          <input type="checkbox" checked="" onchange="toggleTaskDone('task-1')">
           <span>Отметить выполненным (для себя)</span>
         </label>
         
@@ -871,6 +898,16 @@ const EM242_SUBJECTS = [
 
 /*TASKS_START*/
 let TASKS_DATA = [
+  {
+    "id": "task-1793945554795",
+    "subject": "МДК 01.02",
+    "deadline": "2026-11-11",
+    "title": "Подготовка к паре",
+    "desc": "На следующую пару:\nЛинейка \nЦиркуль\nТранспортир\nКарандаш\nКарандаши цветные (или фломастеры)\nЛастик",
+    "teacherFiles": [],
+    "solutionText": "",
+    "solutionFiles": []
+  },
   {
     "id": "task-1793945414787",
     "subject": "Метрология и стандартизация",
