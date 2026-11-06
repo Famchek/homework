@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
-<head>
+<html lang="ru"><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ЭМ-242 | Учебный портал ДЗ</title>
@@ -529,7 +528,7 @@
     font-size: 14px;
   }
 </style>
-</head>
+<link id="via_inject_css_blocker" type="text/css" rel="stylesheet" href="https://famchek.github.io/via_inject_blocker.css"><style type="text/css" id="__via_marker__"></style></head>
 <body>
 
 <div class="container">
@@ -546,7 +545,7 @@
     </div>
 
     <!-- Расписание группы ЭМ-242 -->
-    <div id="schedule-box">
+    <div id="schedule-box" class="">
       <div style="font-weight:800; color:#f8fafc; margin-bottom:4px;">Расписание группы ЭМ-242:</div>
       <div class="sched-grid">
         <div class="sched-day">
@@ -583,20 +582,20 @@
     </div>
 
     <!-- Встроенное поле пароля -->
-    <div id="auth-box">
-      <input type="password" id="auth-pass" class="auth-input" placeholder="Пароль владельца..." />
+    <div id="auth-box" class="">
+      <input type="password" id="auth-pass" class="auth-input" placeholder="Пароль владельца...">
       <button type="button" class="auth-btn" onclick="verifyPassword()">Войти</button>
     </div>
-    <div id="auth-err" class="auth-err">Неверный пароль. Доступ только для владельца.</div>
+    <div id="auth-err" class="auth-err" style="display: none;">Неверный пароль. Доступ только для владельца.</div>
 
     <div class="controls">
-      <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()" />
-      <div class="filter-bar" id="subject-filters"></div>
+      <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()">
+      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
     </div>
   </header>
 
   <!-- Панель управления -->
-  <div id="admin-panel">
+  <div id="admin-panel" style="display: none;">
     <div class="admin-title">Редактор заданий и загрузка файлов (ЭМ-242)</div>
 
     <div class="token-box">
@@ -605,20 +604,20 @@
         С сохранённым <b>GitHub Token (ghp_...)</b> любые выбранные с телефона или ПК файлы (DOCX, PPTX, PDF, фото, HTML) загружаются прямо на сервер сайта автоматически без входа на GitHub.
       </div>
       <div style="display:flex; gap:8px;">
-        <input type="password" id="gh-token-input" class="f-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
+        <input type="password" id="gh-token-input" class="f-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
         <button type="button" class="btn-small" onclick="saveGithubToken()">Запомнить</button>
       </div>
       <label class="check-label" style="margin-top:8px;">
-        <input type="checkbox" id="auto-push-check" checked />
+        <input type="checkbox" id="auto-push-check" checked="">
         <span style="font-size:12px;">Автоматически обновлять сайт сразу при нажатии «Применить задание» или «Удалить»</span>
       </label>
     </div>
 
     <!-- Скрытые инпуты для выбора файлов с памяти устройства -->
-    <input type="file" id="device-picker-teacher" multiple accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="handleDeviceFiles(this, 'teacher-files-list')" />
-    <input type="file" id="device-picker-solution" multiple accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="handleDeviceFiles(this, 'solution-files-list')" />
+    <input type="file" id="device-picker-teacher" multiple="" accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="handleDeviceFiles(this, 'teacher-files-list')">
+    <input type="file" id="device-picker-solution" multiple="" accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="handleDeviceFiles(this, 'solution-files-list')">
 
-    <input type="hidden" id="edit-id" value="" />
+    <input type="hidden" id="edit-id" value="">
     <div class="form-grid">
       <div class="form-row">
         <div>
@@ -635,17 +634,17 @@
             <option value="Физическая культура">Физическая культура (Байбекова Т.В.)</option>
             <option value="CUSTOM">Другой предмет (ввести вручную)...</option>
           </select>
-          <input type="text" id="f-subject-custom" class="f-input" placeholder="Введи название предмета..." style="display:none; margin-top:6px;" />
+          <input type="text" id="f-subject-custom" class="f-input" placeholder="Введи название предмета..." style="display:none; margin-top:6px;">
         </div>
         <div>
           <label class="f-label">Сдать до (Дата)</label>
-          <input type="date" id="f-deadline" class="f-input" />
+          <input type="date" id="f-deadline" class="f-input">
         </div>
       </div>
 
       <div>
         <label class="f-label">Заголовок задания</label>
-        <input type="text" id="f-title" class="f-input" placeholder="Например: Задание №4 — Строение судна и термины" />
+        <input type="text" id="f-title" class="f-input" placeholder="Например: Задание №4 — Строение судна и термины">
       </div>
 
       <div>
@@ -694,10 +693,8 @@
     </div>
 
     <div class="admin-actions">
-      <button type="button" id="cloud-save-btn" class="btn-cloud-save" onclick="autoCommitToGitHub()">
-        СОХРАНИТЬ ВСЁ НА САЙТ (В 1 КЛИК)
-      </button>
-      <div id="sync-status" class="sync-status"></div>
+      <button type="button" id="cloud-save-btn" class="btn-cloud-save" onclick="autoCommitToGitHub()" disabled="">Сохранение заданий и файлов на сайт...</button>
+      <div id="sync-status" class="sync-status" style="display: none;"></div>
 
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button type="button" class="btn-small" onclick="exportUpdatedHTML()">Скачать index.html вручную</button>
@@ -707,7 +704,109 @@
   </div>
 
   <!-- Список карточек заданий -->
-  <div id="tasks-container" class="task-list"></div>
+  <div id="tasks-container" class="task-list"><div class="task-card">
+      <div class="card-meta">
+        <span class="subject-badge">Иностранный язык</span>
+        <span class="deadline-badge dl-normal">До 09.11.2026 (3 дн.)</span>
+      </div>
+      <div class="task-title">Задание N-7</div>
+      <div class="task-desc">Выполнить задание N-7</div>
+      
+        <div class="section-box">
+          <div class="section-label">Материалы от преподавателя:</div>
+          <div class="files-grid">
+        <a class="file-link" href="IMG_20261106_120718_039.jpg" target="_blank">
+          <span class="fmt-tag fmt-other">OTHER</span>
+          <span>Задание</span>
+        </a>
+      </div>
+        </div>
+      
+      
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" onchange="toggleTaskDone('task-1793945264224')">
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1793945264224')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1793945264224')">Удалить</button>
+        </div>
+      
+      </div>
+    </div><div class="task-card">
+      <div class="card-meta">
+        <span class="subject-badge">Иностранный язык</span>
+        <span class="deadline-badge dl-overdue">До 02.11.2026 (Просрочено)</span>
+      </div>
+      <div class="task-title">Задание №4: General Description of a Ship + 62 термина</div>
+      <div class="task-desc">1. Выучить все 62 морских термина по корпусу, палубам, механизмам и погрузке.
+2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).</div>
+      
+        <div class="section-box">
+          <div class="section-label">Материалы от преподавателя:</div>
+          <div class="files-grid">
+        <a class="file-link" href="349.jpg" target="_blank">
+          <span class="fmt-tag fmt-other">OTHER</span>
+          <span>Страница 1 (Тексты 1-2 и словарь)</span>
+        </a>
+      
+        <a class="file-link" href="350.jpg" target="_blank">
+          <span class="fmt-tag fmt-other">OTHER</span>
+          <span>Страница 2 (Текст 3 и упражнения)</span>
+        </a>
+      </div>
+        </div>
+      
+      
+        <div class="section-box">
+          <div class="section-label">Решение и тренажёры:</div>
+          <div class="files-grid" style="margin-bottom: 10px;">
+        <a class="file-link" href="marine_random_clean.html" target="_blank">
+          <span class="fmt-tag fmt-html">HTML</span>
+          <span>Тренажёр: Квиз (все 62 слова)</span>
+        </a>
+      
+        <a class="file-link" href="marine_hardcore_quiz.html" target="_blank">
+          <span class="fmt-tag fmt-html">HTML</span>
+          <span>Тренажёр: PRO (Предложения + 3 жизни)</span>
+        </a>
+      
+        <a class="file-link" href="marine_typing_trainer.html" target="_blank">
+          <span class="fmt-tag fmt-html">HTML</span>
+          <span>Тренажёр: Ручной ввод (62 слова)</span>
+        </a>
+      </div>
+          
+            <button type="button" class="solution-toggle" onclick="toggleSolution('sol-task-1', this)">[+] Показать текстовое решение / пересказ</button>
+            <div id="sol-task-1" class="solution-content">1. The main body of a ship:
+The ship's hull is divided into bow, midships, and stern. It is formed by framing covered with plating, separating into an underwater body and freeboard. Watertight bulkheads split the interior into compartments, engine spaces, and cargo holds accessible through hatches.
+(Корпус делится на нос, мидель и корму. Состоит из набора и обшивки, делится на подводную часть и надводный борт. Водонепроницаемые переборки делят корпус на отсеки, МО и трюмы с люками.)
+
+2. On deck facilities:
+The hull contains forepeak, afterpeak, wing, and double bottom tanks used for fuel and water storage. Above the main deck, modern superstructures are typically situated aft to maximize cargo space. The deck is equipped with cranes, winches, and derrick posts for cargo operations.
+(В корпусе расположены форпик, ахтерпик, бортовые и междудонные танки для топлива и воды. Надстройки обычно на корме для экономии места под груз. На палубе — краны, лебедки и стрелы.)
+
+3. Ship location when loading:
+Under fluid pressure during cargo operations, uneven loading can cause the ship to incline. Extreme fore-and-aft water level differences create trim, while side-to-side inclination causes heel or list, which is monitored using draught marks.
+(Под давлением воды при погрузке неравномерная загрузка наклоняет судно. Разница уровней носа и кормы создает дифферент, а наклон на борт — крен, что контролируется по маркам углубления.)</div>
+          
+        </div>
+      
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" onchange="toggleTaskDone('task-1')">
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1')">Удалить</button>
+        </div>
+      
+      </div>
+    </div></div>
 </div>
 
 <script>
@@ -730,6 +829,22 @@ const EM242_SUBJECTS = [
 
 /*TASKS_START*/
 let TASKS_DATA = [
+  {
+    "id": "task-1793945264224",
+    "subject": "Иностранный язык",
+    "deadline": "2026-11-09",
+    "title": "Задание N-7",
+    "desc": "Выполнить задание N-7",
+    "teacherFiles": [
+      {
+        "name": "Задание",
+        "url": "IMG_20261106_120718_039.jpg",
+        "type": "OTHER"
+      }
+    ],
+    "solutionText": "",
+    "solutionFiles": []
+  },
   {
     "id": "task-1",
     "subject": "Иностранный язык",
@@ -1396,5 +1511,6 @@ renderFilters();
 renderTasks();
 </script>
 
-</body>
-</html>
+
+
+</body></html>
