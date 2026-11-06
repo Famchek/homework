@@ -590,7 +590,7 @@
 
     <div class="controls">
       <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()">
-      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
+      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
     </div>
   </header>
 
@@ -694,7 +694,7 @@
 
     <div class="admin-actions">
       <button type="button" id="cloud-save-btn" class="btn-cloud-save" onclick="autoCommitToGitHub()" disabled="">Сохранение заданий и файлов на сайт...</button>
-      <div id="sync-status" class="sync-status" style="display: none;"></div>
+      <div id="sync-status" class="sync-status sync-ok" style="display: none;">Сохранено! Все файлы и изменения отправлены на сайт (обновится через 30 сек).</div>
 
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button type="button" class="btn-small" onclick="exportUpdatedHTML()">Скачать index.html вручную</button>
@@ -705,6 +705,48 @@
 
   <!-- Список карточек заданий -->
   <div id="tasks-container" class="task-list"><div class="task-card">
+      <div class="card-meta">
+        <span class="subject-badge">Метрология и стандартизация</span>
+        <span class="deadline-badge dl-urgent">До 07.11.2026 (Осталось 1 дн.)</span>
+      </div>
+      <div class="task-title">"Основные определения поверхностей, размеров,предельных отклонений и допусков размера"</div>
+      <div class="task-desc">Дописать конспект</div>
+      
+        <div class="section-box">
+          <div class="section-label">Материалы от преподавателя:</div>
+          <div class="files-grid">
+        <a class="file-link" href="7d24de06d789481095e0ef028154259c.docx" target="_blank">
+          <span class="fmt-tag fmt-docx">DOCX</span>
+          <span>Конспект</span>
+        </a>
+      </div>
+        </div>
+      
+      
+        <div class="section-box">
+          <div class="section-label">Решение и тренажёры:</div>
+          <div class="files-grid" style="margin-bottom: 0;">
+        <a class="file-link" href="Konspekt_Itogovy.docx" target="_blank">
+          <span class="fmt-tag fmt-docx">DOCX</span>
+          <span>Сокращенный вариант с сохранением общего смысла</span>
+        </a>
+      </div>
+          
+        </div>
+      
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" onchange="toggleTaskDone('task-1793945414787')">
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1793945414787')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1793945414787')">Удалить</button>
+        </div>
+      
+      </div>
+    </div><div class="task-card">
       <div class="card-meta">
         <span class="subject-badge">Иностранный язык</span>
         <span class="deadline-badge dl-normal">До 09.11.2026 (3 дн.)</span>
@@ -829,6 +871,28 @@ const EM242_SUBJECTS = [
 
 /*TASKS_START*/
 let TASKS_DATA = [
+  {
+    "id": "task-1793945414787",
+    "subject": "Метрология и стандартизация",
+    "deadline": "2026-11-07",
+    "title": "\"Основные определения поверхностей, размеров,предельных отклонений и допусков размера\"",
+    "desc": "Дописать конспект",
+    "teacherFiles": [
+      {
+        "name": "Конспект",
+        "url": "7d24de06d789481095e0ef028154259c.docx",
+        "type": "DOCX"
+      }
+    ],
+    "solutionText": "",
+    "solutionFiles": [
+      {
+        "name": "Сокращенный вариант с сохранением общего смысла",
+        "url": "Konspekt_Itogovy.docx",
+        "type": "DOCX"
+      }
+    ]
+  },
   {
     "id": "task-1793945264224",
     "subject": "Иностранный язык",
