@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="ru"><head>
+<html lang="ru">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ЭМ-242 | Учебный портал ДЗ</title>
@@ -65,7 +66,7 @@
     background: #0284c7;
   }
 
-  /* Блок расписания ЭМ-242 (фото-обрезка) */
+  /* Блок расписания ЭМ-242 */
   #schedule-box {
     display: none;
     background: #0d1524;
@@ -73,16 +74,39 @@
     border-radius: 10px;
     padding: 12px;
     margin-bottom: 14px;
-    text-align: center;
+    font-size: 12px;
   }
   #schedule-box.open { display: block; }
-  .sched-img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    border: 1px solid #334155;
+  .sched-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
     margin-top: 8px;
   }
+  .sched-day {
+    background: #141e33;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 10px;
+  }
+  .sched-day-title {
+    font-weight: 800;
+    color: #38bdf8;
+    margin-bottom: 6px;
+    font-size: 12px;
+    text-transform: uppercase;
+  }
+  .sched-item {
+    color: #cbd5e1;
+    font-size: 12px;
+    padding: 3px 0;
+    border-bottom: 1px solid #1e293b;
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+  }
+  .sched-item:last-child { border-bottom: none; }
+  .sched-room { color: #64748b; font-size: 11px; white-space: nowrap; }
 
   /* Блок ввода пароля */
   #auth-box {
@@ -271,6 +295,7 @@
   }
   .fmt-pdf { background: #dc2626; color: #ffffff; }
   .fmt-pptx { background: #ea580c; color: #ffffff; }
+  .fmt-docx { background: #2563eb; color: #ffffff; }
   .fmt-html { background: #0284c7; color: #ffffff; }
   .fmt-other { background: #475569; color: #ffffff; }
 
@@ -398,15 +423,49 @@
     gap: 8px;
     margin-top: 6px;
   }
+  .sub-item-wrap {
+    background: #090e17;
+    border: 1px solid #1e293b;
+    border-radius: 8px;
+    padding: 8px;
+  }
   .sub-item {
     display: grid;
-    grid-template-columns: 1fr 1fr auto auto;
+    grid-template-columns: 1fr 1fr auto auto auto;
     gap: 6px;
     align-items: center;
   }
-  @media (max-width: 540px) {
-    .sub-item { grid-template-columns: 1fr; background: #090e17; padding: 8px; border-radius: 8px; }
+  @media (max-width: 580px) {
+    .sub-item { grid-template-columns: 1fr; }
   }
+  .upload-status-row {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 5px;
+    display: none;
+  }
+  .up-wait { color: #fbbf24; display: block; }
+  .up-ok { color: #4ade80; display: block; }
+  .up-err { color: #f87171; display: block; }
+
+  .attach-bar {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 6px;
+  }
+  .btn-device-pick {
+    background: #0369a1;
+    border: 1px solid #38bdf8;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-device-pick:hover { background: #0284c7; }
   .btn-small {
     background: #1e293b;
     border: 1px solid #334155;
@@ -470,7 +529,7 @@
     font-size: 14px;
   }
 </style>
-<link id="via_inject_css_blocker" type="text/css" rel="stylesheet" href="https://famchek.github.io/via_inject_blocker.css"><style type="text/css" id="__via_marker__"></style></head>
+</head>
 <body>
 
 <div class="container">
@@ -478,7 +537,7 @@
     <div class="header-top">
       <div>
         <h1>ЭМ-242 // Портал ДЗ</h1>
-        <div class="subtitle">Задания, презентации преподавателей (PDF/PPTX) и решения</div>
+        <div class="subtitle">Задания, материалы преподавателей (PDF/PPTX/DOCX) и решения</div>
       </div>
       <div class="header-btns">
         <button type="button" class="top-btn" onclick="toggleSchedule()">[ Расписание ]</button>
@@ -486,72 +545,107 @@
       </div>
     </div>
 
-    <!-- Блок расписания ЭМ-242 (фото-обрезка) -->
-    <div id="schedule-box" class="">
+    <!-- Расписание группы ЭМ-242 -->
+    <div id="schedule-box">
       <div style="font-weight:800; color:#f8fafc; margin-bottom:4px;">Расписание группы ЭМ-242:</div>
-      <img src="em242_schedule.png" alt="Расписание ЭМ-242" class="sched-img">
+      <div class="sched-grid">
+        <div class="sched-day">
+          <div class="sched-day-title">Понедельник</div>
+          <div class="sched-item"><span>2. МДК 03.01 / Охрана труда</span><span class="sched-room">308 / 302</span></div>
+          <div class="sched-item"><span>3. Иностранный язык</span><span class="sched-room">каб. 312</span></div>
+          <div class="sched-item"><span>4. Орг. доступной среды</span><span class="sched-room">ДК-2 304</span></div>
+        </div>
+        <div class="sched-day">
+          <div class="sched-day-title">Вторник</div>
+          <div class="sched-item"><span>1. Метрология и станд.</span><span class="sched-room">каб. 305</span></div>
+          <div class="sched-item"><span>2. МДК 03.01 (Синотов)</span><span class="sched-room">ДК-2 308</span></div>
+          <div class="sched-item"><span>3. МДК 01.01 (Егоров)</span><span class="sched-room">ДК-2 302</span></div>
+        </div>
+        <div class="sched-day">
+          <div class="sched-day-title">Среда</div>
+          <div class="sched-item"><span>1. Физическая культура</span><span class="sched-room">Спортзал</span></div>
+          <div class="sched-item"><span>2. МДК 01.01 (Егоров)</span><span class="sched-room">ДК-2 302</span></div>
+          <div class="sched-item"><span>3. МДК 01.02 (Ежов)</span><span class="sched-room">каб. 107</span></div>
+        </div>
+        <div class="sched-day">
+          <div class="sched-day-title">Четверг</div>
+          <div class="sched-item"><span>1. МДК 01.01 (Егоров)</span><span class="sched-room">ДК-2 302</span></div>
+          <div class="sched-item"><span>2. Орг. доступной среды</span><span class="sched-room">ДК-2 304</span></div>
+          <div class="sched-item"><span>3. Метрология и станд.</span><span class="sched-room">каб. 305</span></div>
+        </div>
+        <div class="sched-day">
+          <div class="sched-day-title">Суббота</div>
+          <div class="sched-item"><span>2. МДК 01.02 (Ежов)</span><span class="sched-room">каб. 107</span></div>
+          <div class="sched-item"><span>3. Инф. технологии в ПД</span><span class="sched-room">414 / 106</span></div>
+          <div class="sched-item"><span>4. Охрана труда на судах</span><span class="sched-room">ДК-2 302</span></div>
+        </div>
+      </div>
     </div>
 
     <!-- Встроенное поле пароля -->
-    <div id="auth-box" class="">
-      <input type="password" id="auth-pass" class="auth-input" placeholder="Пароль владельца...">
+    <div id="auth-box">
+      <input type="password" id="auth-pass" class="auth-input" placeholder="Пароль владельца..." />
       <button type="button" class="auth-btn" onclick="verifyPassword()">Войти</button>
     </div>
-    <div id="auth-err" class="auth-err" style="display: none;">Неверный пароль. Доступ только для владельца.</div>
+    <div id="auth-err" class="auth-err">Неверный пароль. Доступ только для владельца.</div>
 
     <div class="controls">
-      <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()">
-      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
+      <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()" />
+      <div class="filter-bar" id="subject-filters"></div>
     </div>
   </header>
 
   <!-- Панель управления -->
-  <div id="admin-panel" style="display: none;">
-    <div class="admin-title">Редактор заданий (ЭМ-242)</div>
+  <div id="admin-panel">
+    <div class="admin-title">Редактор заданий и загрузка файлов (ЭМ-242)</div>
 
     <div class="token-box">
-      <div class="token-title">Авто-сохранение напрямую в GitHub</div>
+      <div class="token-title">Авто-загрузка файлов и сохранение напрямую на сайт</div>
       <div class="token-hint">
-        Вставь свой <b>GitHub Token (ghp_...)</b> один раз и нажми «Запомнить». После этого любые изменения (добавление или удаление заданий) будут сохраняться на сайт одной кнопкой.
+        С сохранённым <b>GitHub Token (ghp_...)</b> любые выбранные с телефона или ПК файлы (DOCX, PPTX, PDF, фото, HTML) загружаются прямо на сервер сайта автоматически без входа на GitHub.
       </div>
       <div style="display:flex; gap:8px;">
-        <input type="password" id="gh-token-input" class="f-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
+        <input type="password" id="gh-token-input" class="f-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" />
         <button type="button" class="btn-small" onclick="saveGithubToken()">Запомнить</button>
       </div>
       <label class="check-label" style="margin-top:8px;">
-        <input type="checkbox" id="auto-push-check" checked="">
-        <span style="font-size:12px;">Автоматически отправлять на сайт сразу при нажатии «Применить» или «Удалить»</span>
+        <input type="checkbox" id="auto-push-check" checked />
+        <span style="font-size:12px;">Автоматически обновлять сайт сразу при нажатии «Применить задание» или «Удалить»</span>
       </label>
     </div>
 
-    <input type="hidden" id="edit-id" value="">
+    <!-- Скрытые инпуты для выбора файлов с памяти устройства -->
+    <input type="file" id="device-picker-teacher" multiple accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="handleDeviceFiles(this, 'teacher-files-list')" />
+    <input type="file" id="device-picker-solution" multiple accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="handleDeviceFiles(this, 'solution-files-list')" />
+
+    <input type="hidden" id="edit-id" value="" />
     <div class="form-grid">
       <div class="form-row">
         <div>
           <label class="f-label">Предмет (по расписанию ЭМ-242)</label>
           <select id="f-subject" class="f-input" onchange="checkCustomSubject(this)">
-            <option value="Иностранный язык">Иностранный язык</option>
-            <option value="МДК 01.01">МДК 01.01 (Егоров Е.А.)</option>
-            <option value="МДК 01.02">МДК 01.02 (Ежов Д.М.)</option>
-            <option value="МДК 03.01">МДК 03.01</option>
-            <option value="Охрана труда на судах">Охрана труда на судах</option>
-            <option value="Метрология и стандартизация">Метрология и стандартизация</option>
+            <option value="Иностранный язык">Иностранный язык (Жумадилова Ф.З.)</option>
+            <option value="МДК 01.01">МДК 01.01 (Егоров В.А.)</option>
+            <option value="МДК 01.02">МДК 01.02 (Ежов Д.Н.)</option>
+            <option value="МДК 03.01">МДК 03.01 (Синотов Г.И.)</option>
+            <option value="Охрана труда на судах">Охрана труда на судах (Егоров В.А.)</option>
+            <option value="Метрология и стандартизация">Метрология и стандартизация (Казакова И.Ю.)</option>
             <option value="Информационные технологии в ПД">Информационные технологии в ПД</option>
-            <option value="Организация доступной среды">Организация доступной среды (Гринимеер Е.К.)</option>
-            <option value="Физическая культура">Физическая культура (Байбакова Т.В.)</option>
+            <option value="Организация доступной среды">Организация доступной среды (Кузьмина Е.К.)</option>
+            <option value="Физическая культура">Физическая культура (Байбекова Т.В.)</option>
             <option value="CUSTOM">Другой предмет (ввести вручную)...</option>
           </select>
-          <input type="text" id="f-subject-custom" class="f-input" placeholder="Введи название предмета..." style="display:none; margin-top:6px;">
+          <input type="text" id="f-subject-custom" class="f-input" placeholder="Введи название предмета..." style="display:none; margin-top:6px;" />
         </div>
         <div>
           <label class="f-label">Сдать до (Дата)</label>
-          <input type="date" id="f-deadline" class="f-input">
+          <input type="date" id="f-deadline" class="f-input" />
         </div>
       </div>
 
       <div>
         <label class="f-label">Заголовок задания</label>
-        <input type="text" id="f-title" class="f-input" placeholder="Например: Задание №4 — Строение судна и термины">
+        <input type="text" id="f-title" class="f-input" placeholder="Например: Задание №4 — Строение судна и термины" />
       </div>
 
       <div>
@@ -559,32 +653,51 @@
         <textarea id="f-desc" class="f-input" placeholder="Подробности задания..."></textarea>
       </div>
 
+      <!-- Файлы от преподавателя -->
       <div>
-        <label class="f-label">Файлы от преподавателя (PPTX, PDF, фото)</label>
+        <label class="f-label">Файлы от преподавателя (DOCX, PPTX, PDF, фото)</label>
         <div id="teacher-files-list" class="sub-list"></div>
-        <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('teacher-files-list')">+ Добавить файл преподавателя</button>
+        <div class="attach-bar">
+          <button type="button" class="btn-device-pick" onclick="document.getElementById('device-picker-teacher').click()">
+            Выбрать файл с устройства (DOCX / PPTX / PDF...)
+          </button>
+          <button type="button" class="btn-small" onclick="addFileRow('teacher-files-list')">
+            + Указать ссылку вручную
+          </button>
+        </div>
       </div>
 
+      <!-- Текстовое решение -->
       <div>
         <label class="f-label">Текст решения / конспект (необязательно)</label>
         <textarea id="f-solution" class="f-input" placeholder="Готовый ответ, краткий пересказ или шпаргалка..."></textarea>
       </div>
 
+      <!-- Файлы решений / Тренажёры -->
       <div>
-        <label class="f-label">Файлы решений / Ссылки на HTML-тренажёры</label>
+        <label class="f-label">Файлы итогового решения (DOCX, PDF, PPTX, HTML-тренажёры)</label>
         <div id="solution-files-list" class="sub-list"></div>
-        <button type="button" class="btn-small" style="margin-top:6px;" onclick="addFileRow('solution-files-list')">+ Добавить файл решения или тренажёр</button>
+        <div class="attach-bar">
+          <button type="button" class="btn-device-pick" onclick="document.getElementById('device-picker-solution').click()">
+            Выбрать решение с устройства (DOCX / PDF / HTML...)
+          </button>
+          <button type="button" class="btn-small" onclick="addFileRow('solution-files-list')">
+            + Указать ссылку вручную
+          </button>
+        </div>
       </div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button type="button" class="btn-primary" onclick="saveTaskFromForm()">Применить задание</button>
+        <button type="button" id="apply-task-btn" class="btn-primary" onclick="saveTaskFromForm()">Применить задание</button>
         <button type="button" class="btn-small" onclick="resetForm()">Очистить поля</button>
       </div>
     </div>
 
     <div class="admin-actions">
-      <button type="button" id="cloud-save-btn" class="btn-cloud-save" onclick="autoCommitToGitHub()" disabled="">Сохранение на GitHub...</button>
-      <div id="sync-status" class="sync-status sync-ok" style="display: none;">Сохранено! Изменения отправлены в репозиторий GitHub (обновится на сайте через 30 сек).</div>
+      <button type="button" id="cloud-save-btn" class="btn-cloud-save" onclick="autoCommitToGitHub()">
+        СОХРАНИТЬ ВСЁ НА САЙТ (В 1 КЛИК)
+      </button>
+      <div id="sync-status" class="sync-status"></div>
 
       <div style="display:flex; gap:8px; flex-wrap:wrap;">
         <button type="button" class="btn-small" onclick="exportUpdatedHTML()">Скачать index.html вручную</button>
@@ -594,99 +707,7 @@
   </div>
 
   <!-- Список карточек заданий -->
-  <div id="tasks-container" class="task-list"><div class="task-card">
-      <div class="card-meta">
-        <span class="subject-badge">Иностранный язык</span>
-        <span class="deadline-badge dl-normal">До 09.11.2026 (7 дн.)</span>
-      </div>
-      <div class="task-title">Задание N-7</div>
-      <div class="task-desc">Выполнить задание N-7</div>
-      
-      
-      <div class="card-footer">
-        <label class="check-label">
-          <input type="checkbox" onchange="toggleTaskDone('task-1793608648225')">
-          <span>Отметить выполненным (для себя)</span>
-        </label>
-        
-        <div style="display:flex; gap:8px;">
-          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1793608648225')">Изменить</button>
-          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1793608648225')">Удалить</button>
-        </div>
-      
-      </div>
-    </div><div class="task-card done-card">
-      <div class="card-meta">
-        <span class="subject-badge">Иностранный язык</span>
-        <span class="deadline-badge dl-urgent">До 02.11.2026 (Сдать сегодня!)</span>
-      </div>
-      <div class="task-title">Задание №4: General Description of a Ship + 30 терминов</div>
-      <div class="task-desc">1. Выучить 30 морских терминов по корпусу, палубным механизмам и погрузке.
-2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).</div>
-      
-        <div class="section-box">
-          <div class="section-label">Материалы от преподавателя:</div>
-          <div class="files-grid">
-        <a class="file-link" href="349.jpg" target="_blank">
-          <span class="fmt-tag fmt-other">OTHER</span>
-          <span>Страница 1 (Тексты 1-2 и словарь)</span>
-        </a>
-      
-        <a class="file-link" href="350.jpg" target="_blank">
-          <span class="fmt-tag fmt-other">OTHER</span>
-          <span>Страница 2 (Текст 3 и упражнения)</span>
-        </a>
-      </div>
-        </div>
-      
-      
-        <div class="section-box">
-          <div class="section-label">Решение и тренажёры:</div>
-          <div class="files-grid" style="margin-bottom: 10px;">
-        <a class="file-link" href="marine_random_clean.html" target="_blank">
-          <span class="fmt-tag fmt-html">HTML</span>
-          <span>Тренажёр: Квиз 30 слов</span>
-        </a>
-      
-        <a class="file-link" href="marine_hardcore_quiz.html" target="_blank">
-          <span class="fmt-tag fmt-html">HTML</span>
-          <span>Тренажёр: PRO (Предложения + 3 жизни)</span>
-        </a>
-      
-        <a class="file-link" href="marine_typing_trainer.html" target="_blank">
-          <span class="fmt-tag fmt-html">HTML</span>
-          <span>Тренажёр: Ручной ввод слов</span>
-        </a>
-      </div>
-          
-            <button type="button" class="solution-toggle" onclick="toggleSolution('sol-task-1', this)">[+] Показать текстовое решение / пересказ</button>
-            <div id="sol-task-1" class="solution-content">1. The main body of a ship:
-The ship's hull is divided into bow, midships, and stern. It is formed by framing covered with plating, separating into an underwater body and freeboard. Watertight bulkheads split the interior into compartments, engine spaces, and cargo holds accessible through hatches.
-(Корпус делится на нос, мидель и корму. Состоит из набора и обшивки, делится на подводную часть и надводный борт. Водонепроницаемые переборки делят корпус на отсеки, МО и трюмы с люками.)
-
-2. On deck facilities:
-The hull contains forepeak, afterpeak, wing, and double bottom tanks used for fuel and water storage. Above the main deck, modern superstructures are typically situated aft to maximize cargo space. The deck is equipped with cranes, winches, and derrick posts for cargo operations.
-(В корпусе расположены форпик, ахтерпик, бортовые и междудонные танки для топлива и воды. Надстройки обычно на корме для экономии места под груз. На палубе — краны, лебедки и стрелы.)
-
-3. Ship location when loading:
-Under fluid pressure during cargo operations, uneven loading can cause the ship to incline. Extreme fore-and-aft water level differences create trim, while side-to-side inclination causes heel or list, which is monitored using draught marks.
-(Под давлением воды при погрузке неравномерная загрузка наклоняет судно. Разница уровней носа и кормы создает дифферент, а наклон на борт — крен, что контролируется по маркам углубления.)</div>
-          
-        </div>
-      
-      <div class="card-footer">
-        <label class="check-label">
-          <input type="checkbox" checked="" onchange="toggleTaskDone('task-1')">
-          <span>Отметить выполненным (для себя)</span>
-        </label>
-        
-        <div style="display:flex; gap:8px;">
-          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1')">Изменить</button>
-          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1')">Удалить</button>
-        </div>
-      
-      </div>
-    </div></div>
+  <div id="tasks-container" class="task-list"></div>
 </div>
 
 <script>
@@ -710,21 +731,11 @@ const EM242_SUBJECTS = [
 /*TASKS_START*/
 let TASKS_DATA = [
   {
-    "id": "task-1793608648225",
-    "subject": "Иностранный язык",
-    "deadline": "2026-11-09",
-    "title": "Задание N-7",
-    "desc": "Выполнить задание N-7",
-    "teacherFiles": [],
-    "solutionText": "",
-    "solutionFiles": []
-  },
-  {
     "id": "task-1",
     "subject": "Иностранный язык",
     "deadline": "2026-11-02",
-    "title": "Задание №4: General Description of a Ship + 30 терминов",
-    "desc": "1. Выучить 30 морских терминов по корпусу, палубным механизмам и погрузке.\n2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).",
+    "title": "Задание №4: General Description of a Ship + 62 термина",
+    "desc": "1. Выучить все 62 морских термина по корпусу, палубам, механизмам и погрузке.\n2. Прочитать и перевести 3 текста (The main body of a ship, On deck facilities, Ship location when loading).",
     "teacherFiles": [
       {
         "name": "Страница 1 (Тексты 1-2 и словарь)",
@@ -740,7 +751,7 @@ let TASKS_DATA = [
     "solutionText": "1. The main body of a ship:\nThe ship's hull is divided into bow, midships, and stern. It is formed by framing covered with plating, separating into an underwater body and freeboard. Watertight bulkheads split the interior into compartments, engine spaces, and cargo holds accessible through hatches.\n(Корпус делится на нос, мидель и корму. Состоит из набора и обшивки, делится на подводную часть и надводный борт. Водонепроницаемые переборки делят корпус на отсеки, МО и трюмы с люками.)\n\n2. On deck facilities:\nThe hull contains forepeak, afterpeak, wing, and double bottom tanks used for fuel and water storage. Above the main deck, modern superstructures are typically situated aft to maximize cargo space. The deck is equipped with cranes, winches, and derrick posts for cargo operations.\n(В корпусе расположены форпик, ахтерпик, бортовые и междудонные танки для топлива и воды. Надстройки обычно на корме для экономии места под груз. На палубе — краны, лебедки и стрелы.)\n\n3. Ship location when loading:\nUnder fluid pressure during cargo operations, uneven loading can cause the ship to incline. Extreme fore-and-aft water level differences create trim, while side-to-side inclination causes heel or list, which is monitored using draught marks.\n(Под давлением воды при погрузке неравномерная загрузка наклоняет судно. Разница уровней носа и кормы создает дифферент, а наклон на борт — крен, что контролируется по маркам углубления.)",
     "solutionFiles": [
       {
-        "name": "Тренажёр: Квиз 30 слов",
+        "name": "Тренажёр: Квиз (все 62 слова)",
         "url": "marine_random_clean.html",
         "type": "HTML"
       },
@@ -750,7 +761,7 @@ let TASKS_DATA = [
         "type": "HTML"
       },
       {
-        "name": "Тренажёр: Ручной ввод слов",
+        "name": "Тренажёр: Ручной ввод (62 слова)",
         "url": "marine_typing_trainer.html",
         "type": "HTML"
       }
@@ -761,6 +772,7 @@ let TASKS_DATA = [
 
 let currentSubject = "ВСЕ";
 let isAdminUnlocked = false;
+let activeUploadsCount = 0;
 
 function toggleSchedule() {
   document.getElementById("schedule-box").classList.toggle("open");
@@ -805,9 +817,24 @@ function formatDeadline(dateStr) {
 function getBadgeClass(type) {
   const t = (type || "").toUpperCase();
   if (t === "PDF") return "fmt-pdf";
-  if (t === "PPTX") return "fmt-pptx";
+  if (t === "PPTX" || t === "PPT") return "fmt-pptx";
+  if (t === "DOCX" || t === "DOC") return "fmt-docx";
   if (t === "HTML") return "fmt-html";
   return "fmt-other";
+}
+
+function detectFileType(filename) {
+  const ext = (filename.split(".").pop() || "").toLowerCase();
+  if (ext === "pdf") return "PDF";
+  if (ext === "pptx" || ext === "ppt") return "PPTX";
+  if (ext === "docx" || ext === "doc") return "DOCX";
+  if (ext === "html" || ext === "htm") return "HTML";
+  return "OTHER";
+}
+
+function cleanTitleFromFilename(filename) {
+  const withoutExt = filename.replace(/\.[^/.]+$/, "");
+  return withoutExt.replace(/[_-]+/g, " ").trim() || filename;
 }
 
 function renderFilters() {
@@ -976,14 +1003,19 @@ document.getElementById("auth-pass").addEventListener("keypress", (e) => {
   if (e.key === "Enter") verifyPassword();
 });
 
+function getGithubToken() {
+  return document.getElementById("gh-token-input").value.trim() || localStorage.getItem("gh_pat_token") || "";
+}
+
 function saveGithubToken() {
   const t = document.getElementById("gh-token-input").value.trim();
   if (!t) return;
   localStorage.setItem("gh_pat_token", t);
   const statusBox = document.getElementById("sync-status");
   statusBox.className = "sync-status sync-ok";
-  statusBox.textContent = "Токен сохранён в браузере телефона.";
+  statusBox.textContent = "Токен сохранён! Теперь выбранные с устройства файлы сразу отправляются на сайт.";
   statusBox.style.display = "block";
+  uploadAllPendingFiles();
 }
 
 function loadStoredToken() {
@@ -993,23 +1025,194 @@ function loadStoredToken() {
   }
 }
 
+// === ЧТЕНИЕ ФАЙЛА С УСТРОЙСТВА В BASE64 ===
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const res = reader.result || "";
+      const commaIdx = res.indexOf(",");
+      resolve(commaIdx >= 0 ? res.slice(commaIdx + 1) : res);
+    };
+    reader.onerror = () => reject(new Error("Не удалось прочитать файл с устройства"));
+    reader.readAsDataURL(file);
+  });
+}
+
+// === ПРЯМАЯ ЗАГРУЗКА ВЫБРАННОГО ФАЙЛА В РЕПОЗИТОРИЙ ЧЕРЕЗ API ===
+async function uploadSingleFileToGitHub(file, wrapEl) {
+  const statusEl = wrapEl.querySelector(".upload-status-row");
+  const token = getGithubToken();
+
+  if (!token) {
+    wrapEl._pendingFile = file;
+    statusEl.className = "upload-status-row up-wait";
+    statusEl.textContent = "Файл подготовлен. Введи GitHub Token выше, чтобы он автоматически выгрузился на сайт.";
+    return false;
+  }
+
+  activeUploadsCount++;
+  statusEl.className = "upload-status-row up-wait";
+  const sizeKb = Math.max(1, Math.round(file.size / 1024));
+  statusEl.textContent = `Загрузка «${file.name}» (${sizeKb} КБ) на сервер сайта...`;
+
+  try {
+    const base64Data = await readFileAsBase64(file);
+    const encodedPath = encodeURIComponent(file.name);
+    const apiUrl = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${encodedPath}`;
+
+    let existingSha = null;
+    const checkRes = await fetch(apiUrl, {
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (checkRes.ok) {
+      const existingData = await checkRes.json();
+      existingSha = existingData.sha;
+    }
+
+    const bodyPayload = {
+      message: `Upload attachment: ${file.name}`,
+      content: base64Data
+    };
+    if (existingSha) {
+      bodyPayload.sha = existingSha;
+    }
+
+    const putRes = await fetch(apiUrl, {
+      method: "PUT",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/vnd.github.v3+json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(bodyPayload)
+    });
+
+    if (!putRes.ok) {
+      const errJson = await putRes.json().catch(() => ({}));
+      throw new Error(errJson.message || `Код ошибки ${putRes.status}`);
+    }
+
+    wrapEl._pendingFile = null;
+    statusEl.className = "upload-status-row up-ok";
+    statusEl.textContent = `✓ Файл «${file.name}» (${sizeKb} КБ) загружен на сайт!`;
+    return true;
+  } catch (err) {
+    wrapEl._pendingFile = file;
+    statusEl.className = "upload-status-row up-err";
+    statusEl.textContent = `Ошибка выгрузки «${file.name}»: ${err.message}`;
+    return false;
+  } finally {
+    activeUploadsCount = Math.max(0, activeUploadsCount - 1);
+  }
+}
+
+async function uploadAllPendingFiles() {
+  const wraps = document.querySelectorAll(".sub-item-wrap");
+  for (const w of wraps) {
+    if (w._pendingFile) {
+      await uploadSingleFileToGitHub(w._pendingFile, w);
+    }
+  }
+}
+
+// === ОБРАБОТКА ВЫБОРА ФАЙЛОВ С ТЕЛЕФОНА / ПК ===
+async function handleDeviceFiles(inputEl, containerId) {
+  const files = Array.from(inputEl.files || []);
+  if (!files.length) return;
+
+  for (const file of files) {
+    const detectedType = detectFileType(file.name);
+    const defaultLabel = cleanTitleFromFilename(file.name);
+    const wrapEl = addFileRow(containerId, defaultLabel, file.name, detectedType);
+    await uploadSingleFileToGitHub(file, wrapEl);
+  }
+  inputEl.value = "";
+}
+
+async function pickFileForExistingRow(btnEl) {
+  const wrapEl = btnEl.closest(".sub-item-wrap");
+  const rowFileInput = wrapEl.querySelector(".row-hidden-file");
+  rowFileInput.click();
+}
+
+async function onRowFileSelected(inputEl) {
+  const file = (inputEl.files || [])[0];
+  if (!file) return;
+  const wrapEl = inputEl.closest(".sub-item-wrap");
+  const nameInp = wrapEl.querySelector(".file-name");
+  const urlInp = wrapEl.querySelector(".file-url");
+  const typeSel = wrapEl.querySelector(".file-type");
+
+  if (!nameInp.value.trim()) {
+    nameInp.value = cleanTitleFromFilename(file.name);
+  }
+  urlInp.value = file.name;
+  typeSel.value = detectFileType(file.name);
+
+  await uploadSingleFileToGitHub(file, wrapEl);
+  inputEl.value = "";
+}
+
+function addFileRow(containerId, name = "", url = "", type = "DOCX") {
+  const container = document.getElementById(containerId);
+  const wrap = document.createElement("div");
+  wrap.className = "sub-item-wrap";
+  wrap.innerHTML = `
+    <div class="sub-item">
+      <input type="text" class="f-input file-name" placeholder="Название кнопки (напр. Отчёт)" value="${name.replace(/"/g, '&quot;')}" />
+      <input type="text" class="f-input file-url" placeholder="Имя файла или ссылка" value="${url.replace(/"/g, '&quot;')}" />
+      <select class="f-input file-type">
+        <option value="DOCX" ${type === "DOCX" ? "selected" : ""}>DOCX</option>
+        <option value="PDF" ${type === "PDF" ? "selected" : ""}>PDF</option>
+        <option value="PPTX" ${type === "PPTX" ? "selected" : ""}>PPTX</option>
+        <option value="HTML" ${type === "HTML" ? "selected" : ""}>HTML</option>
+        <option value="OTHER" ${type === "OTHER" ? "selected" : ""}>Другое</option>
+      </select>
+      <input type="file" class="row-hidden-file" accept=".pdf,.pptx,.ppt,.docx,.doc,.html,.htm,.jpg,.jpeg,.png,.webp,.zip,.txt,*/*" style="display:none" onchange="onRowFileSelected(this)" />
+      <button type="button" class="btn-small" title="Выбрать с устройства" onclick="pickFileForExistingRow(this)">Файл...</button>
+      <button type="button" class="btn-small btn-danger" onclick="this.closest('.sub-item-wrap').remove()">X</button>
+    </div>
+    <div class="upload-status-row"></div>
+  `;
+  container.appendChild(wrap);
+  return wrap;
+}
+
+function readFilesFromContainer(containerId) {
+  const rows = document.querySelectorAll(`#${containerId} .sub-item-wrap`);
+  const res = [];
+  rows.forEach(r => {
+    const name = r.querySelector(".file-name").value.trim();
+    const url = r.querySelector(".file-url").value.trim();
+    const type = r.querySelector(".file-type").value;
+    if (name && url) res.push({ name, url, type });
+  });
+  return res;
+}
+
 async function autoCommitToGitHub() {
-  const token = document.getElementById("gh-token-input").value.trim() || localStorage.getItem("gh_pat_token");
+  const token = getGithubToken();
   const statusBox = document.getElementById("sync-status");
   const btn = document.getElementById("cloud-save-btn");
 
   if (!token) {
     statusBox.className = "sync-status sync-err";
-    statusBox.textContent = "Вставь GitHub Token (ghp_...) в поле выше и нажми «Запомнить», либо скачай index.html кнопкой ниже.";
+    statusBox.textContent = "Вставь GitHub Token (ghp_...) в поле выше и нажми «Запомнить».";
     statusBox.style.display = "block";
     return;
   }
 
   btn.disabled = true;
-  btn.textContent = "Сохранение на GitHub...";
+  btn.textContent = "Сохранение заданий и файлов на сайт...";
   statusBox.style.display = "none";
 
   try {
+    await uploadAllPendingFiles();
+
     const url = `https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${GH_FILE}`;
     const getRes = await fetch(url, {
       headers: {
@@ -1034,7 +1237,7 @@ async function autoCommitToGitHub() {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        message: "Update tasks EM-242",
+        message: "Update tasks and attachments EM-242",
         content: contentBase64,
         sha: fileData.sha
       })
@@ -1046,7 +1249,7 @@ async function autoCommitToGitHub() {
     }
 
     statusBox.className = "sync-status sync-ok";
-    statusBox.textContent = "Сохранено! Изменения отправлены в репозиторий GitHub (обновится на сайте через 30 сек).";
+    statusBox.textContent = "Сохранено! Все файлы и изменения отправлены на сайт (обновится через 30 сек).";
     statusBox.style.display = "block";
   } catch (err) {
     statusBox.className = "sync-status sync-err";
@@ -1060,43 +1263,13 @@ async function autoCommitToGitHub() {
 
 function triggerAutoPushIfEnabled() {
   const autoCheck = document.getElementById("auto-push-check");
-  const token = document.getElementById("gh-token-input").value.trim() || localStorage.getItem("gh_pat_token");
+  const token = getGithubToken();
   if (autoCheck && autoCheck.checked && token) {
     autoCommitToGitHub();
   }
 }
 
-function addFileRow(containerId, name = "", url = "", type = "PDF") {
-  const container = document.getElementById(containerId);
-  const row = document.createElement("div");
-  row.className = "sub-item";
-  row.innerHTML = `
-    <input type="text" class="f-input file-name" placeholder="Название кнопки" value="${name.replace(/"/g, '&quot;')}" />
-    <input type="text" class="f-input file-url" placeholder="Имя файла (lecture.pptx) или URL" value="${url.replace(/"/g, '&quot;')}" />
-    <select class="f-input file-type">
-      <option value="PDF" ${type === "PDF" ? "selected" : ""}>PDF</option>
-      <option value="PPTX" ${type === "PPTX" ? "selected" : ""}>PPTX</option>
-      <option value="HTML" ${type === "HTML" ? "selected" : ""}>HTML</option>
-      <option value="OTHER" ${type === "OTHER" ? "selected" : ""}>Другое</option>
-    </select>
-    <button type="button" class="btn-small btn-danger" onclick="this.parentElement.remove()">X</button>
-  `;
-  container.appendChild(row);
-}
-
-function readFilesFromContainer(containerId) {
-  const rows = document.querySelectorAll(`#${containerId} .sub-item`);
-  const res = [];
-  rows.forEach(r => {
-    const name = r.querySelector(".file-name").value.trim();
-    const url = r.querySelector(".file-url").value.trim();
-    const type = r.querySelector(".file-type").value;
-    if (name && url) res.push({ name, url, type });
-  });
-  return res;
-}
-
-function saveTaskFromForm() {
+async function saveTaskFromForm() {
   const id = document.getElementById("edit-id").value || ("task-" + Date.now());
   const selSubj = document.getElementById("f-subject").value;
   const customSubj = document.getElementById("f-subject-custom").value.trim();
@@ -1107,7 +1280,12 @@ function saveTaskFromForm() {
   const desc = document.getElementById("f-desc").value.trim();
   const solutionText = document.getElementById("f-solution").value.trim();
 
-  if (!title) return;
+  if (!title) {
+    alert("Введи заголовок задания.");
+    return;
+  }
+
+  await uploadAllPendingFiles();
 
   const teacherFiles = readFilesFromContainer("teacher-files-list");
   const solutionFiles = readFilesFromContainer("solution-files-list");
@@ -1218,6 +1396,5 @@ renderFilters();
 renderTasks();
 </script>
 
-
-
-</body></html>
+</body>
+</html>
