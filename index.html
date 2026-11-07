@@ -590,7 +590,7 @@
 
     <div class="controls">
       <input type="text" id="search-box" class="search-input" placeholder="Поиск по предмету или тексту задания..." oninput="renderTasks()">
-      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
+      <div class="filter-bar" id="subject-filters"><button class="filter-btn active">ВСЕ</button><button class="filter-btn">Метрология и стандартизация</button><button class="filter-btn">МДК 01.02</button><button class="filter-btn">Иностранный язык</button><button class="filter-btn">МДК 01.01</button><button class="filter-btn">МДК 03.01</button><button class="filter-btn">Охрана труда на судах</button><button class="filter-btn">Информационные технологии в ПД</button><button class="filter-btn">Организация доступной среды</button><button class="filter-btn">Физическая культура</button></div>
     </div>
   </header>
 
@@ -706,8 +706,39 @@
   <!-- Список карточек заданий -->
   <div id="tasks-container" class="task-list"><div class="task-card">
       <div class="card-meta">
+        <span class="subject-badge">Метрология и стандартизация</span>
+        <span class="deadline-badge dl-normal">До 10.11.2026 (3 дн.)</span>
+      </div>
+      <div class="task-title">Практическая работа N-3</div>
+      <div class="task-desc">Выполнить практическую работу</div>
+      
+        <div class="section-box">
+          <div class="section-label">Материалы от преподавателя:</div>
+          <div class="files-grid">
+        <a class="file-link" href="658d44688586436fabed6724bdc5691f.docx" target="_blank">
+          <span class="fmt-tag fmt-docx">DOCX</span>
+          <span>Практическая</span>
+        </a>
+      </div>
+        </div>
+      
+      
+      <div class="card-footer">
+        <label class="check-label">
+          <input type="checkbox" onchange="toggleTaskDone('task-1794034907179')">
+          <span>Отметить выполненным (для себя)</span>
+        </label>
+        
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn-small" onclick="loadTaskToForm('task-1794034907179')">Изменить</button>
+          <button type="button" class="btn-small btn-danger" onclick="deleteTask('task-1794034907179')">Удалить</button>
+        </div>
+      
+      </div>
+    </div><div class="task-card">
+      <div class="card-meta">
         <span class="subject-badge">МДК 01.02</span>
-        <span class="deadline-badge dl-normal">До 11.11.2026 (5 дн.)</span>
+        <span class="deadline-badge dl-normal">До 11.11.2026 (4 дн.)</span>
       </div>
       <div class="task-title">Подготовка к паре</div>
       <div class="task-desc">На следующую пару:
@@ -734,7 +765,7 @@
     </div><div class="task-card">
       <div class="card-meta">
         <span class="subject-badge">Метрология и стандартизация</span>
-        <span class="deadline-badge dl-urgent">До 07.11.2026 (Осталось 1 дн.)</span>
+        <span class="deadline-badge dl-urgent">До 07.11.2026 (Сдать сегодня!)</span>
       </div>
       <div class="task-title">"Основные определения поверхностей, размеров,предельных отклонений и допусков размера"</div>
       <div class="task-desc">Дописать конспект</div>
@@ -776,7 +807,7 @@
     </div><div class="task-card">
       <div class="card-meta">
         <span class="subject-badge">Иностранный язык</span>
-        <span class="deadline-badge dl-normal">До 09.11.2026 (3 дн.)</span>
+        <span class="deadline-badge dl-urgent">До 09.11.2026 (Осталось 2 дн.)</span>
       </div>
       <div class="task-title">Задание N-7</div>
       <div class="task-desc">Выполнить задание N-7</div>
@@ -898,6 +929,22 @@ const EM242_SUBJECTS = [
 
 /*TASKS_START*/
 let TASKS_DATA = [
+  {
+    "id": "task-1794034907179",
+    "subject": "Метрология и стандартизация",
+    "deadline": "2026-11-10",
+    "title": "Практическая работа N-3",
+    "desc": "Выполнить практическую работу",
+    "teacherFiles": [
+      {
+        "name": "Практическая",
+        "url": "658d44688586436fabed6724bdc5691f.docx",
+        "type": "DOCX"
+      }
+    ],
+    "solutionText": "",
+    "solutionFiles": []
+  },
   {
     "id": "task-1793945554795",
     "subject": "МДК 01.02",
